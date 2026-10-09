@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chameleon Club — Remote Party Game</title>
+<style>
+:root{--bg:#f5f6fa;--panel:#fff;--ink:#192235;--muted:#69778e;--lime:#4c6fff;--pink:#e94c91;--line:#e6eaf2;--shadow:0 16px 55px rgba(35,48,80,.07)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% -20%,#e4eaff 0,transparent 53%),var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;color:var(--ink);padding:clamp(12px,3vw,28px);-webkit-font-smoothing:antialiased}
+main{width:min(820px,100%);margin:auto}header{text-align:center;margin:22px 0 26px}h1{font-size:clamp(2.25rem,7vw,3.9rem);line-height:1.08;margin:14px 0 8px;letter-spacing:-.055em;font-weight:800}header p,.hint{color:var(--muted);line-height:1.55}.card{background:rgba(255,255,255,.94);border:1px solid #fff;border-radius:26px;padding:clamp(18px,4vw,30px);margin:16px 0;box-shadow:var(--shadow)}h2{font-size:1.35rem;letter-spacing:-.025em;margin:0 0 15px}h3{letter-spacing:-.02em}label{display:block;color:#5d6980;font-size:.88rem;font-weight:600;margin:15px 0 7px}input,select,textarea,button{font:inherit;border-radius:14px;padding:13px 15px;width:100%;min-height:47px}input,select,textarea{background:#f8f9fc;color:var(--ink);border:1px solid #dfe5ef;outline:none}input:focus,select:focus,textarea:focus{border-color:#6a86ff;box-shadow:0 0 0 4px #4c6fff1c}button{border:0;background:var(--lime);color:white;font-weight:700;cursor:pointer;margin-top:11px;transition:transform .15s,filter .15s,background .15s;box-shadow:0 5px 15px #4c6fff25}button:hover:not(:disabled){filter:brightness(.96);transform:translateY(-1px)}button:active:not(:disabled){transform:scale(.99)}button.secondary{background:#eef1f8;color:#34415a;box-shadow:none}button.pink{background:var(--pink)}button.danger{background:#fff0f2;color:#c73755;box-shadow:none;border:1px solid #ffd6de}button:disabled{opacity:.45;cursor:not-allowed}.row{display:flex;gap:12px;align-items:end}.row>*{flex:1;min-width:0}.hide{display:none!important}.pill{display:inline-block;background:#edf1ff;border-radius:999px;padding:7px 13px;color:#5069c7;font-weight:700;font-size:.75rem;letter-spacing:.035em}.status{text-align:center;color:var(--muted);font-size:.9rem}.secret{text-align:center;border:1px solid #e4e9f7;border-radius:22px;padding:22px 17px;margin:16px 0;background:#f8faff}.word{font-size:clamp(1.7rem,6vw,2.4rem);font-weight:800;color:#425fe3;margin:8px 0;overflow-wrap:anywhere}.players{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}.players span{background:#eef1f8;border-radius:999px;padding:9px 13px;font-weight:600;font-size:.9rem}.players span.me{outline:2px solid #7890ff}.boardPreview{margin:15px 0;border:1px solid var(--line);border-radius:16px;padding:13px}.boardPreview summary{cursor:pointer;color:#4c64c9;font-weight:700}.gameboard{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:14px}.gameboard div{background:#f1f4fb;border:1px solid #e3e8f2;border-radius:13px;padding:15px 7px;text-align:center;font-weight:650;overflow-wrap:anywhere;font-size:.9rem;min-height:54px;display:grid;place-items:center}.boardheader{margin:20px 0 4px;color:#263b8d}.wordrow{display:flex;gap:7px;margin:7px 0}.wordrow input{flex:1}.wordrow button{width:auto;margin:0;background:#eef1f8;color:#34415a}.small{font-size:.83rem}.footer{text-align:center;color:#9ba6b9;font-size:.8rem;margin:24px}.notice{padding:13px 15px;background:#f1f4fb;border-radius:14px;color:#53627d;font-size:.9rem}.error{color:#c73755}.success{color:#23875b}.utility{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}.utility summary{cursor:pointer;font-size:.9rem;color:#67758d;font-weight:650}.utility button{margin-top:10px}.phase-steps{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 18px}.phase-steps span{font-size:.75rem;font-weight:700;border-radius:100px;background:#edf0f6;color:#8a96a8;padding:7px 11px}.phase-steps span.active{background:#e8eeff;color:#3d5fda}.inline-action{width:auto;padding:10px 15px;min-height:42px}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1f293d;color:white;padding:12px 20px;border-radius:15px;box-shadow:0 12px 36px #0003;z-index:10;max-width:90%;text-align:center;font-weight:600}
+@media(max-width:550px){.gameboard{grid-template-columns:repeat(3,minmax(0,1fr))}.gameboard div{font-size:.82rem;padding:11px 5px;min-height:48px}.row{flex-direction:column;align-items:stretch;gap:0}.card{border-radius:22px}.row button{margin-top:10px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+:root{--bg:#f4f6fb;--panel:#fff;--ink:#172139;--muted:#65728a;--line:#e3e8f2;--lime:#526bfa;--pink:#e85a99;--soft:#edf1ff}
+body.dark{--bg:#101521;--panel:#1c2434;--ink:#f2f5ff;--muted:#a8b5cc;--line:#344055;--soft:#28344f;background:radial-gradient(circle at 40% -10%,#27345a,transparent 55%),var(--bg)}
+body.dark .card{background:var(--panel);border-color:var(--line)}body.dark input,body.dark select,body.dark textarea{background:#141c2b;color:var(--ink);border-color:var(--line)}body.dark .notice,body.dark .gameboard div,body.dark .players span,body.dark button.secondary,body.dark .boardPreview,body.dark .secret{background:var(--soft);color:var(--ink);border-color:var(--line)}body.dark label,body.dark .utility summary,body.dark .boardheader{color:var(--muted)}body.dark .pill,body.dark .phase-steps span{background:var(--soft);color:#b7c6ff}body.dark .word{color:#9eafff}body.dark button.danger{background:#4d2834;color:#ffb7c9}
+body{transition:background .25s,color .25s}header{position:relative}h1{letter-spacing:-.06em}.card{border:1px solid var(--line)}.toolbar{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:12px 0}.toolbar button{width:auto;min-height:36px;padding:8px 13px;margin:0;font-size:.82rem;border-radius:999px}.avatar{display:inline-grid;place-items:center;width:29px;height:29px;border-radius:50%;background:#dfe6ff;color:#4159bd;font-weight:800;margin-right:5px}.players span{display:inline-flex;align-items:center}.ready{color:#18865c}.waiting{color:#a87832}.tiny{font-size:.78rem;color:var(--muted)}.statsGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}.statBox{padding:13px;background:var(--soft);border-radius:16px;text-align:center}.statBox strong{display:block;font-size:1.35rem}.statBox small{color:var(--muted)}.timer{font-size:2.3rem;font-weight:800;text-align:center;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.timer.low{color:#d94967}.voteBar{height:9px;background:var(--line);border-radius:30px;overflow:hidden;margin:5px 0 13px}.voteBar i{display:block;background:linear-gradient(90deg,#637aff,#a16fff);height:100%;border-radius:30px;transition:width .7s}.roundHistory{max-height:220px;overflow:auto}.roundHistory p{border-bottom:1px solid var(--line);padding-bottom:8px}.modebar{display:flex;gap:9px;align-items:center;justify-content:center;flex-wrap:wrap}.modebar button{width:auto}.actionGroup{display:flex;gap:10px;flex-wrap:wrap}.actionGroup button{flex:1;min-width:140px}.qrBox{text-align:center}.qrBox img{max-width:200px;border-radius:12px;padding:8px;background:white}.role-flip{animation:roleIn .45s cubic-bezier(.2,.9,.2,1)}@keyframes roleIn{from{opacity:.3;transform:rotateY(70deg) scale(.94)}to{opacity:1;transform:rotateY(0) scale(1)}}.gameboard div{transition:transform .15s}.gameboard div:hover{transform:translateY(-2px)}@media(max-width:550px){.toolbar button{font-size:.76rem}.card{padding:18px}.timer{font-size:2rem}.gameboard{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(prefers-reduced-motion:reduce){.role-flip{animation:none}}
+</style>
+</head>
+<body><main>
+<header><div class="pill">THE SOCIAL DEDUCTION GAME</div><h1>Chameleon Club<span style="color:#4c6fff">.</span></h1><p>One secret word. One brilliant bluffer. Your favourite people.</p><div class="toolbar"><button id="themeToggle" class="secondary">◐ Dark mode</button><button id="soundToggle" class="secondary">♫ Sound off</button></div></header>
+<div id="configWarning" class="card hide"><h2>One-time setup needed</h2><p class="hint">This copy needs your Firebase project settings added before it can create remote rooms. Follow SETUP.md in the download, then upload the edited index.html to free hosting.</p></div>
+<section class="card" id="home">
+<h2>Join the party</h2>
+<label for="name">Your player name</label><input id="name" maxlength="20" placeholder="e.g. Fares">
+<div class="row"><div><label for="roomCode">Room code (if joining)</label><input id="roomCode" maxlength="6" placeholder="e.g. K7P9Q2" autocapitalize="characters"></div><div><label for="action"> </label><button id="joinBtn" class="secondary">Join room</button></div></div>
+<button id="createBtn">Create a new room</button>
+<p class="hint small">Everyone joins on their own phone or computer. Use a voice call (Discord, FaceTime, etc.) to talk while playing.</p>
+<div id="homeMsg" class="hint"></div>
+</section>
+<section class="card hide" id="lobby">
+<div class="row"><div><h2>Room <span id="codeLabel"></span></h2><p class="hint">Share this code with your friends.</p></div><div><button id="copyCode" class="secondary">Copy room code</button></div></div>
+<button id="copyInvite" class="secondary">↗ Copy invite link</button><div id="lobbyStatus" class="notice">Waiting for players…</div>
+<div class="players" id="playerList"></div><button id="readyBtn" class="secondary">✓ I’m ready</button><div id="readyStatus" class="tiny"></div><details class="boardPreview"><summary>Invite with QR code</summary><div class="qrBox" id="qrBox"></div></details><div id="lobbyStats" class="statsGrid"></div>
+<div id="hostControls" class="hide">
+<label for="difficultyFilter">Board difficulty</label><select id="difficultyFilter"><option value="all">All difficulties</option><option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option><option value="custom">Community boards</option><option value="favorites">★ Favourites</option></select><label for="boardSelect">Choose a board</label><select id="boardSelect"></select><p class="hint small" id="boardCount"></p><details class="boardPreview"><summary>Preview selected board</summary><div id="boardPreviewWords" class="gameboard"></div></details>
+<div class="actionGroup"><button id="favoriteBoard" class="secondary">☆ Favourite board</button><button id="randomBoard" class="secondary">⤨ Random board</button><button id="resetReady" class="secondary">Reset ready checks</button></div><div class="row"><button id="startBtn">Start round</button><button id="endRoomBtn" class="secondary">Back to menu</button></div>
+</div>
+<p class="hint small">Host controls rounds and board selection. Everyone can contribute boards to the permanent shared library.</p>
+<div id="customEditor">
+<h3>Add your own board</h3>
+<label for="newBoardName">Board name</label><input id="newBoardName" maxlength="32" placeholder="e.g. Inside jokes">
+<label for="newWords">Words (one per line; add at least 5)</label><textarea id="newWords" rows="4" placeholder="Your mate's catchphrase&#10;A famous meme&#10;A game character&#10;..."></textarea>
+<button id="addBoard" class="secondary">Save board permanently for everyone</button><div id="customMsg" class="hint small"></div>
+</div>
+</section>
+<section class="card hide" id="game">
+<div class="row"><div><div class="pill" id="roundLabel">ROUND 1</div><h2 id="gameTitle">Secret roles</h2></div><div><button id="backLobby" class="secondary">Room / boards</button></div></div>
+<section id="boardDisplay"><h3 class="boardheader" id="boardDisplayTitle">Word board</h3><p class="hint small">Everyone sees the same words. Only non-Chameleons know which one is secret.</p><div id="gameBoardWords" class="gameboard"></div></section>
+<div id="phaseSteps" class="phase-steps"></div><div id="timerPanel" class="notice hide"><div class="timer" id="timerValue">01:00</div><p class="tiny" style="text-align:center;margin:3px">Discussion countdown</p><div id="timerHost" class="actionGroup hide"><button id="timerStart" class="secondary">Start / resume</button><button id="timerPause" class="secondary">Pause</button><button id="timerPlus" class="secondary">+30 seconds</button><select id="timerPreset"><option value="30">30 seconds</option><option value="60" selected>60 seconds</option><option value="90">90 seconds</option><option value="120">120 seconds</option></select><button id="timerReset" class="secondary">Reset timer</button></div></div><div id="rolePanel" class="secret"><p class="hint">Only reveal this when you are alone. Keep your screen private.</p><div class="word" id="roleValue">Ready?</div><p id="roleHint" class="hint"></p><button id="revealRole">Reveal my secret</button></div>
+<div id="cluePanel" class="hide"><h3>Give one clue each</h3><p class="hint">Take turns saying one clue out loud. Don't make it too obvious.</p><div id="phaseInfo" class="notice"></div><div id="voteControls" class="hide"><label for="votePick">Who is the Chameleon?</label><select id="votePick"></select><button id="submitVote">Submit my vote</button><p id="voteMsg" class="hint"></p></div><div id="hostVoteControls" class="hide"><button id="showResults">Close voting</button></div><div id="guessPanel" class="secret hide"><h3>🦎 Final chance!</h3><p id="guessInfo" class="hint"></p><div id="guessControls" class="hide"><label for="guessPick">Choose the secret word from the board</label><select id="guessPick"></select><button id="submitGuess" class="pink">Submit guess & reveal result</button><p id="guessMsg" class="hint"></p></div><div id="hostGuessControls" class="hide"><p class="hint">Only the Chameleon can submit a guess. If they cannot continue, the host can end the round without a guess.</p><button id="skipGuess" class="secondary">Reveal result without guess</button></div></div><div id="voteBreakdown" class="hide"></div><div id="results" class="secret hide"></div><div id="scoreboard" class="hide"><h3>🏆 Leaderboard</h3><div id="scoreList" class="statsGrid"></div><details class="boardPreview"><summary>Round history</summary><div id="historyList" class="roundHistory"></div></details></div></div>
+<div id="roundHostControls" class="hide"><button id="nextPhase">Start clues</button><button id="newRound" class="secondary hide">New round</button></div><details class="utility" id="roundUtilities"><summary>⚙ Round controls & troubleshooting</summary><p class="hint small">Host only: safely end a stuck round or return everyone to the lobby. Your shared boards are never deleted.</p><button id="forceEndRound" class="danger">End round now</button><button id="returnEveryoneLobby" class="secondary">Return everyone to lobby</button></details><div id="gameMsg" class="hint"></div>
+</section>
+<div class="footer">Made for friends • No app install • Keep the room code private</div>
+</main>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+// Firebase web app configuration (public client settings).
+const firebaseConfig = {
+  apiKey: "AIzaSyD-bfkEdTx_qkPqp0SGKuMBt9BxjWPY-6s",
+  authDomain: "chameleon-club.firebaseapp.com",
+  databaseURL: "https://chameleon-club-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "chameleon-club",
+  storageBucket: "chameleon-club.firebasestorage.app",
+  messagingSenderId: "977252905972",
+  appId: "1:977252905972:web:1c98cd7e63a133bee63fa1"
+};
+const DEFAULT_BOARDS = {
+  "Mixed bag":["Pizza","A beach","Minecraft","A penguin","A casino","Taylor Swift","A school","A dragon","A supermarket","A wedding","A haunted house","A spaceship","A superhero","A birthday party","A robot","A secret agent","A rollercoaster","A snowman","A magician","A museum"],
+  "Pokémon":["Pikachu","Charizard","Mewtwo","Eevee","Snorlax","Gengar","Psyduck","Lucario","Greninja","Ditto","Magikarp","Umbreon","Mimikyu","Rayquaza","Bulbasaur","Jigglypuff","Gyarados","Meowth","Dragonite","Piplup","Team Rocket","Poké Ball"],
+  "Gaming":["Minecraft","Mario Kart","Fortnite","Chess","Monopoly","The Sims","Among Us","Call of Duty","League of Legends","Tetris","Animal Crossing","Cluedo","Pac-Man","Rocket League","GTA","Elden Ring","Roblox","Wii Sports","Fall Guys","Stardew Valley"],
+  "Films & TV":["Shrek","Breaking Bad","The Office","Harry Potter","Star Wars","SpongeBob","The Simpsons","Jurassic Park","The Lion King","Stranger Things","The Matrix","Home Alone","Batman","Friends","Toy Story","Squid Game","The Lord of the Rings","Finding Nemo","The Avengers","Peaky Blinders"],
+  "Food":["Pizza","Sushi","Tacos","Ice cream","Pancakes","Curry","Popcorn","Chocolate","Burger","Doughnut","Watermelon","Coffee","Cheese","Ramen","Fish and chips","Bubble tea","Lasagne","Nachos","Croissant","Hot dog"],
+  "Animals":["Penguin","Tiger","Octopus","Giraffe","Fox","Dolphin","Koala","Shark","Frog","Owl","Crocodile","Panda","Eagle","Hedgehog","Kangaroo","Turtle","Wolf","Flamingo","Sloth","Bat"],
+  "Places":["London","Tokyo","New York","A beach","A zoo","A school","A casino","A hospital","A museum","A supermarket","Paris","A space station","A football stadium","A theme park","A library","A desert","A cruise ship","A cinema","A castle","An airport"],
+  "Football":["A penalty","VAR","A red card","A corner kick","A goalkeeper","The World Cup","A derby","A hat-trick","A transfer deadline","A football chant","A referee","A bicycle kick","A free kick","Extra time","A manager getting sacked","A Panenka","A clean sheet","A nutmeg","A trophy parade","An own goal"],
+  "Memes & internet":["Rickroll","Doge","Distracted boyfriend","NPC livestream","Skibidi Toilet","Keyboard warrior","Touch grass","Main character energy","Rage quit","Doomscrolling","A viral dance","A reaction GIF","A group chat","A hot take","A conspiracy theory","A meme coin","A bot account","A cringe compilation","A streamer","A comment section"]
+};
+const EXTRA_BOARDS = {"Countries":["Canada","Brazil","Japan","Italy","Egypt","India","Australia","Mexico","France","Kenya","Norway","Argentina","South Korea","Greece","Morocco","Iceland"],"Capital cities":["London","Paris","Tokyo","Rome","Madrid","Berlin","Ottawa","Cairo","Seoul","Bangkok","Lisbon","Dublin","Athens","Oslo","Hanoi","Vienna"],"Sports":["Tennis","Basketball","Rugby","Cricket","Swimming","Boxing","Cycling","Golf","Hockey","Skiing","Baseball","Surfing","Volleyball","Archery","Badminton","Fencing"],"Jobs":["Teacher","Doctor","Pilot","Chef","Plumber","Firefighter","Dentist","Lawyer","Photographer","Farmer","Mechanic","Architect","Journalist","Librarian","Astronaut","Barber"],"At the beach":["Suncream","Sandcastle","Lifeguard","Surfboard","Seagull","Beach towel","Flip-flops","Bucket","Shell","Ice lolly","Waves","Umbrella","Sunglasses","Rock pool","Snorkel","Beach ball"],"Weather":["Thunderstorm","Rainbow","Hail","Fog","Blizzard","Heatwave","Tornado","Drizzle","Hurricane","Snowflake","Sunshine","Lightning","Cloud","Wind","Frost","Monsoon"],"Musical instruments":["Guitar","Piano","Violin","Drums","Trumpet","Flute","Saxophone","Harp","Cello","Clarinet","Trombone","Banjo","Ukulele","Harmonica","Tambourine","Accordion"],"Transport":["Bicycle","Train","Aeroplane","Ferry","Taxi","Submarine","Tram","Helicopter","Scooter","Motorbike","Bus","Hot-air balloon","Cruise ship","Rocket","Skateboard","Cable car"],"Superheroes":["Spider-Man","Batman","Wonder Woman","Superman","Iron Man","Thor","Hulk","Black Panther","Flash","Aquaman","Wolverine","Deadpool","Captain Marvel","Doctor Strange","Storm","Green Lantern"],"Villains":["Joker","Thanos","Darth Vader","Loki","Voldemort","Ursula","Scar","Maleficent","Bowser","Cruella","Green Goblin","Magneto","Hades","Sauron","Venom","Harley Quinn"],"Desserts":["Brownie","Cheesecake","Tiramisu","Apple pie","Macaron","Éclair","Gelato","Cupcake","Pudding","Churros","Baklava","Mochi","Trifle","Waffle","Crème brûlée","Doughnut"],"Drinks":["Tea","Coffee","Lemonade","Milkshake","Smoothie","Hot chocolate","Cola","Orange juice","Iced tea","Bubble tea","Water","Apple juice","Energy drink","Coconut water","Ginger ale","Mocktail"],"Household objects":["Lamp","Sofa","Mirror","Kettle","Toaster","Clock","Cushion","Vacuum","Curtain","Remote control","Wardrobe","Iron","Mug","Bookshelf","Fan","Doormat"],"School days":["Homework","Detention","Playground","Assembly","Uniform","Exam","Lunchbox","Whiteboard","School bus","Library","Science lab","Headteacher","Pencil case","Sports day","School trip","Report card"],"Fantasy worlds":["Dragon","Wizard","Potion","Castle","Elf","Goblin","Sword","Spellbook","Unicorn","Treasure","Portal","Troll","Knight","Fairy","Dungeon","Phoenix"],"Space":["Mars","Saturn","Moon","Astronaut","Comet","Black hole","Galaxy","Meteor","Space station","Telescope","Rocket","Nebula","Alien","Orbit","Spacesuit","Asteroid"],"Wildlife habitats":["Rainforest","Savannah","Coral reef","Desert","Tundra","Wetland","Grassland","Jungle","Mountain","River","Ocean","Cave","Arctic","Swamp","Woodland","Mangrove"],"Technology":["Laptop","Smartphone","Keyboard","Drone","Smartwatch","Router","Printer","Webcam","Tablet","Headphones","Microchip","USB stick","VR headset","Bluetooth","Robot","Touchscreen"],"Famous landmarks":["Eiffel Tower","Big Ben","Statue of Liberty","Colosseum","Taj Mahal","Pyramids","Great Wall","Sydney Opera House","Stonehenge","Mount Rushmore","Burj Khalifa","Christ the Redeemer","Machu Picchu","Sagrada Família","Golden Gate Bridge","Leaning Tower"],"Party time":["Birthday cake","Confetti","Balloon","DJ","Party hat","Dance floor","Invitation","Piñata","Party popper","Karaoke","Photo booth","Fancy dress","Disco ball","Gift bag","Playlist","Surprise party"]};
+Object.assign(DEFAULT_BOARDS, EXTRA_BOARDS);
+const $=id=>document.getElementById(id);
+let app,db,uid,roomRef,roomId,roomData,unsubscribe=null,isHost=false,roleShown=false,myVote=null,seenRound=0,previousPhase='',timerInterval=null;
+const STORE='chameleonClubPrefsV2';let prefs={};try{prefs=JSON.parse(localStorage.getItem(STORE)||'{}')}catch{};
+function savePrefs(){try{localStorage.setItem(STORE,JSON.stringify(prefs))}catch{}}
+function playSound(freq=520){if(!prefs.sound)return;try{const a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.frequency.value=freq;o.type='sine';g.gain.setValueAtTime(.06,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.16);o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+.17);setTimeout(()=>a.close(),400)}catch{}}
+function applyTheme(){document.body.classList.toggle('dark',prefs.dark===true);$('themeToggle').textContent=prefs.dark?'☼ Light mode':'◐ Dark mode';$('soundToggle').textContent=prefs.sound?'♫ Sound on':'♫ Sound off'}
+function getFavs(){return prefs.favorites||[]}
+function difficulty(name){if(!Object.prototype.hasOwnProperty.call(DEFAULT_BOARDS,name))return 'custom';if(['Mixed bag','Animals','Food','Places','Countries','Sports','Jobs','At the beach','Weather','Transport','Drinks','Household objects','School days','Party time'].includes(name))return 'easy';if(['Pokémon','Gaming','Films & TV','Football','Memes & internet','Villains','Fantasy worlds','Technology','Famous landmarks','Capital cities'].includes(name))return 'hard';return 'medium'}
+function scoreOf(id){return (roomData.scores||{})[id]||{points:0,wins:0,streak:0,bluffs:0,catches:0}}
+function winnerInfo(){const caught=roomData.accused===roomData.chameleon,correct=caught&&roomData.finalGuess===roomData.secretWord;return {caught,correct,chamWon:!caught||correct}}
+function avatar(name){return esc((name||'?').trim().slice(0,1).toUpperCase())}
+function inviteUrl(){return location.origin+location.pathname+'?room='+encodeURIComponent(roomId)}
+function ensureTimer(){if(timerInterval)return;timerInterval=setInterval(()=>{if(roomData&&roomData.phase==='clues')renderTimer()},250)}
+function renderTimer(){if(!roomData)return;const t=roomData.timer||{remaining:60,running:false};let seconds=Math.max(0,Math.ceil((t.remaining||0)-(t.running?(Date.now()-(t.startedAt||Date.now()))/1000:0)));$('timerValue').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');$('timerValue').classList.toggle('low',seconds<=10);}
+async function updateTimer(action){if(!isHost||roomData.phase!=='clues')return;const t=roomData.timer||{remaining:60,running:false},left=Math.max(0,(t.remaining||0)-(t.running?(Date.now()-(t.startedAt||Date.now()))/1000:0));let v;if(action==='start')v={remaining:left||Number($('timerPreset').value),running:true,startedAt:Date.now()};if(action==='pause')v={remaining:left,running:false,startedAt:null};if(action==='plus')v={remaining:left+30,running:t.running,startedAt:Date.now()};if(action==='reset')v={remaining:Number($('timerPreset').value),running:false,startedAt:null};await roomRef.child('timer').set(v);}
+
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function msg(id,t,cls=''){ $(id).className='hint '+cls;$(id).textContent=t||''; }
+function configured(){return firebaseConfig.apiKey!=="PASTE_API_KEY_HERE"&&firebaseConfig.projectId!=="PASTE_PROJECT_ID_HERE"&&firebaseConfig.databaseURL!=="PASTE_DATABASE_URL_HERE";}
+function randomCode(){const chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";return Array.from({length:6},()=>chars[Math.floor(Math.random()*chars.length)]).join('')}
+function shuffle(a){let x=[...a];for(let i=x.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
+function getName(){return $('name').value.trim().slice(0,20)}
+async function init(){
+ applyTheme();$('name').value=prefs.name||'';
+ $('themeToggle').onclick=()=>{prefs.dark=!prefs.dark;savePrefs();applyTheme()};$('soundToggle').onclick=()=>{prefs.sound=!prefs.sound;savePrefs();applyTheme();playSound()};
+
+ if(!configured()){ $('configWarning').classList.remove('hide');$('createBtn').disabled=true;$('joinBtn').disabled=true;return}
+ try{app=firebase.initializeApp(firebaseConfig);db=firebase.database();const cred=await firebase.auth().signInAnonymously();uid=cred.user.uid;}
+ catch(e){$('homeMsg').textContent='Connection setup error: '+e.message+' — check SETUP.md and Firebase settings.';$('createBtn').disabled=true;$('joinBtn').disabled=true}
+}
+function setScreen(id){['home','lobby','game'].forEach(x=>$(x).classList.toggle('hide',x!==id))}
+async function createRoom(){
+ const name=getName();prefs.name=name;savePrefs();if(!name)return msg('homeMsg','Enter your name first.','error');
+ try{let code;for(let i=0;i<8;i++){code=randomCode();const snap=await db.ref('rooms/'+code).get();if(!snap.exists())break}
+ const boardObj={};Object.entries(DEFAULT_BOARDS).forEach(([k,v])=>boardObj[k]=v);
+ const sharedSnap=await db.ref('sharedBoards').get();
+ sharedSnap.forEach(child=>{const entry=child.val();if(entry&&typeof entry.name==='string'&&Array.isArray(entry.words)&&entry.words.length>=5){boardObj[entry.name]=entry.words}});
+ const data={host:uid,createdAt:Date.now(),players:{[uid]:{name,joinedAt:Date.now(),ready:false}},boards:boardObj,selectedBoard:'Mixed bag',round:0,phase:'lobby',chameleon:null,secretWord:null,votes:{},roleAcks:{},endedEarly:false,scores:{},history:{},recentBoards:{},timer:{remaining:60,running:false}};
+ await db.ref('rooms/'+code).set(data);await enterRoom(code);}catch(e){msg('homeMsg','Could not create room: '+e.message,'error')}
+}
+async function joinRoom(){
+ const name=getName();prefs.name=name;savePrefs();const code=$('roomCode').value.trim().toUpperCase();if(!name)return msg('homeMsg','Enter your name first.','error');if(!/^[A-HJ-NP-Z2-9]{6}$/.test(code))return msg('homeMsg','Enter the six-character room code.','error');
+ try{const ref=db.ref('rooms/'+code),snap=await ref.get();if(!snap.exists())return msg('homeMsg','Room not found. Check the code with your host.','error');await ref.child('players/'+uid).update({name,joinedAt:Date.now(),ready:false});await enterRoom(code)}catch(e){msg('homeMsg','Could not join: '+e.message,'error')}
+}
+async function enterRoom(code){
+ roomId=code;try{sessionStorage.setItem('chameleonRoom',code)}catch{};roomRef=db.ref('rooms/'+code);isHost=false;myVote=null;roleShown=false;
+ if(unsubscribe)roomRef.off('value',unsubscribe);
+ unsubscribe=roomRef.on('value',snap=>{if(!snap.exists()){msg('homeMsg','This room no longer exists.');setScreen('home');return}roomData=snap.val();isHost=roomData.host===uid;if(roomData.phase!==previousPhase){if(previousPhase)playSound(roomData.phase==='result'?880:560);previousPhase=roomData.phase;roleShown=false}renderRoom()});
+ setScreen('lobby');
+}
+function renderRoom(){
+ if(!roomData)return;
+ $('codeLabel').textContent=roomId;
+ const players=Object.entries(roomData.players||{}),ready=players.filter(([id,p])=>p.ready).length;
+ $('lobbyStatus').textContent=`${players.length} players · ${ready} ready`;
+ $('playerList').innerHTML=players.map(([id,p])=>`<span class="${id===uid?'me':''}"><b class="avatar">${avatar(p.name)}</b>${esc(p.name)} ${id===roomData.host?'★':''} ${p.ready?'<span class="ready">✓</span>':'<span class="waiting">○</span>'}${id===uid?' (you)':''}</span>`).join('');
+ $('readyBtn').textContent=roomData.players?.[uid]?.ready?'✓ Ready — tap to undo':'○ Mark myself ready';
+ $('readyStatus').textContent=players.length<3?'At least 3 players required.':'All players should tap Ready before the host starts.';
+ $('hostControls').classList.toggle('hide',!isHost);
+ $('startBtn').disabled=!isHost||players.length<3||ready!==players.length;
+ const all=Object.keys(roomData.boards||{}).sort((a,b)=>a.localeCompare(b)),filter=$('difficultyFilter').value;
+ let names=all.filter(n=>filter==='all'||(filter==='favorites'?getFavs().includes(n):difficulty(n)===filter));
+ if(!names.length)names=all;
+ $('boardSelect').innerHTML=names.map(b=>`<option value="${esc(b)}">${esc(b)}${getFavs().includes(b)?' ★':''}</option>`).join('');
+ $('boardSelect').value=names.includes(roomData.selectedBoard)?roomData.selectedBoard:names[0]||'';
+ $('boardSelect').onchange=()=>{if(isHost)roomRef.child('selectedBoard').set($('boardSelect').value)};
+ const selected=$('boardSelect').value,preview=(roomData.boards||{})[selected]||[];
+ $('boardCount').textContent=`${all.length} boards · ${preview.length} words · ${difficulty(selected)} difficulty`;
+ $('boardPreviewWords').innerHTML=preview.map(w=>`<div>${esc(w)}</div>`).join('');
+ $('favoriteBoard').textContent=getFavs().includes(selected)?'★ Unfavourite board':'☆ Favourite board';
+ const link=inviteUrl();$('qrBox').innerHTML=`<p class="tiny">Scan to join room ${esc(roomId)}</p><img alt="Room invitation QR code" loading="lazy" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(link)}"><p class="tiny">QR code uses a third-party image service. Use Copy invite link if offline.</p>`;
+ $('lobbyStats').innerHTML=players.map(([id,p])=>`<div class="statBox"><strong>${scoreOf(id).points||0}</strong><small>${esc(p.name)} · points</small></div>`).join('');
+ if(roomData.phase==='lobby')setScreen('lobby');else{setScreen('game');renderGame()}
+}
+async function startRound(){
+ const ps=Object.entries(roomData.players||{});if(ps.length<3){alert('You need at least 3 players.');return}
+ const board=roomData.selectedBoard,words=(roomData.boards||{})[board]||[];if(words.length<5){alert('This board needs at least 5 words.');return}
+ const recent=roomData.recentBoards||{},unused=words.filter(w=>!(recent[board]||[]).includes(w)),pool=unused.length?unused:words;const secretWord=pool[Math.floor(Math.random()*pool.length)],cham=ps[Math.floor(Math.random()*ps.length)][0];
+ await roomRef.update({round:(roomData.round||0)+1,phase:'roles',chameleon:cham,secretWord,votes:{},roleAcks:{},finalGuess:null,accused:null,startedAt:Date.now(),endedEarly:false,voteTie:false,resultRecorded:false,timer:{remaining:60,running:false},['recentBoards/'+board]:[...(recent[board]||[]).slice(-7),secretWord]});
+}
+function renderGame(){
+ const boardName=roomData.selectedBoard||'Mixed bag';
+ const boardWords=(roomData.boards||{})[boardName]||[];
+ $('boardDisplayTitle').textContent=boardName+' — Word board';
+ $('gameBoardWords').innerHTML=boardWords.map(w=>`<div>${esc(w)}</div>`).join('');
+ $('roundLabel').textContent='ROUND '+(roomData.round||1);$('roundUtilities').classList.toggle('hide',!isHost);const steps=[['roles','Roles'],['clues','Clues'],['voting','Voting'],['guess','Final guess'],['result','Result']];$('phaseSteps').innerHTML=steps.map(([key,label])=>`<span class="${roomData.phase===key?'active':''}">${label}</span>`).join('');$('roundHostControls').classList.toggle('hide',!isHost);$('nextPhase').classList.toggle('hide',!isHost||!['roles','clues'].includes(roomData.phase));$('nextPhase').textContent=roomData.phase==='roles'?'Start clues':'Open voting';$('newRound').classList.toggle('hide',!isHost||roomData.phase!=='result');$('gameTitle').textContent=roomData.phase==='roles'?'Secret roles':roomData.phase==='clues'?'Clues & discussion':roomData.phase==='voting'?'Vote for the Chameleon':roomData.phase==='guess'?'Chameleon’s final guess':'Round result';
+ $('rolePanel').classList.toggle('hide',!['roles'].includes(roomData.phase));$('timerPanel').classList.toggle('hide',roomData.phase!=='clues');$('timerHost').classList.toggle('hide',!isHost);renderTimer();ensureTimer();
+ $('cluePanel').classList.toggle('hide',roomData.phase==='roles');
+ if(roomData.phase==='roles'){
+   const seen=roomData.roleAcks&&roomData.roleAcks[uid];$('roleValue').textContent=roleShown?(uid===roomData.chameleon?'YOU ARE THE CHAMELEON':roomData.secretWord):'Ready?';
+   $('roleValue').style.color=roleShown&&uid===roomData.chameleon?'var(--pink)':'var(--lime)';
+   $('roleHint').textContent=roleShown?(uid===roomData.chameleon?'You do not know the word. Listen to clues and bluff!':'Give a subtle clue that shows you know the word, without saying it outright.'):'Tap reveal when you are somewhere private.';
+   $('revealRole').textContent=roleShown?'Hide my secret':'Reveal my secret';$('rolePanel').classList.toggle('role-flip',roleShown);
+   if(seen){$('roleHint').textContent='Your role has been seen. Wait for the host to start clues.'}
+ } else {
+   $('phaseInfo').textContent=roomData.phase==='clues'?'Take turns giving one clue out loud. When everyone has spoken, the host opens voting.':roomData.phase==='voting'?'Vote privately for the person you think is the Chameleon.':'The round has ended.';
+   $('voteControls').classList.toggle('hide',roomData.phase!=='voting');
+   $('guessPanel').classList.toggle('hide',roomData.phase!=='guess');
+   if(roomData.phase==='guess'){
+    const isCham=uid===roomData.chameleon;
+    $('guessInfo').textContent=isCham?'You were caught! Pick one word from the board. Your answer is final.':'The Chameleon was caught! Wait for their final guess before the secret word is revealed.';
+    $('guessControls').classList.toggle('hide',!isCham);
+    $('hostGuessControls').classList.toggle('hide',!isHost);
+    $('guessMsg').textContent='';
+    if(isCham){$('guessPick').innerHTML=boardWords.map(w=>`<option value="${esc(w)}">${esc(w)}</option>`).join('')}
+   }
+   $('hostVoteControls').classList.toggle('hide',!(isHost&&roomData.phase==='voting'));
+   if(roomData.phase==='voting'){
+    $('votePick').innerHTML=Object.entries(roomData.players||{}).filter(([id])=>id!==uid).map(([id,p])=>`<option value="${id}">${esc(p.name)}</option>`).join('');
+    $('voteMsg').textContent=roomData.votes&&roomData.votes[uid]?'Your vote is submitted. You can change it until voting closes.':'Your vote is private.';
+   }
+   if(roomData.phase==='result'){
+    const caught=roomData.accused===roomData.chameleon;
+    const correct=caught&&roomData.finalGuess===roomData.secretWord;
+    const won=!caught||correct;
+    $('results').classList.remove('hide');
+    $('results').innerHTML=roomData.endedEarly?`<div class="word">Round ended early</div><p>The host ended this round. No winner was recorded.</p><p class="hint">Start a new round whenever you're ready.</p>`:`<div class="word" style="color:${won?'var(--pink)':'var(--lime)'}">${won?'🦎 Chameleon wins!':'🎉 Group wins!'}</div><p>The Chameleon was <b>${esc((roomData.players||{})[roomData.chameleon]?.name||'Unknown')}</b>.</p><p>The secret word was <b>${esc(roomData.secretWord)}</b>.</p><p>${caught?`Final guess: <b>${esc(roomData.finalGuess||'No guess')}</b> — ${correct?'correct!':'incorrect.'}`:'The group did not correctly identify the Chameleon.'}</p><p class="hint">Host can start a new round.</p>`;
+   }else $('results').classList.add('hide');
+ }
+ const voting=roomData.phase==='result'||roomData.phase==='guess';$('voteBreakdown').classList.toggle('hide',!voting);
+ if(voting){const counts={};Object.values(roomData.votes||{}).forEach(id=>counts[id]=(counts[id]||0)+1);const total=Object.values(counts).reduce((a,b)=>a+b,0);$('voteBreakdown').innerHTML='<h3>🗳️ Voting results</h3>'+Object.entries(roomData.players||{}).sort((a,b)=>(counts[b[0]]||0)-(counts[a[0]]||0)).map(([id,p])=>`<div class="small">${esc(p.name)} — ${counts[id]||0} vote(s)</div><div class="voteBar"><i style="width:${total?Math.round((counts[id]||0)/total*100):0}%"></i></div>`).join('')+(roomData.voteTie?'<p class="notice">Tie vote: nobody was convicted, so the Chameleon escapes.</p>':'');}
+ $('scoreboard').classList.toggle('hide',roomData.phase!=='result');
+ if(roomData.phase==='result'){const sorted=Object.entries(roomData.players||{}).sort((a,b)=>scoreOf(b[0]).points-scoreOf(a[0]).points);$('scoreList').innerHTML=sorted.map(([id,p],i)=>{const x=scoreOf(id);return `<div class="statBox"><strong>${i===0?'🏆 ':''}${x.points||0}</strong><small>${esc(p.name)} · ${x.wins||0} wins · ${x.streak||0} streak</small></div>`}).join('');$('historyList').innerHTML=Object.values(roomData.history||{}).reverse().slice(0,20).map(h=>`<p class="small"><b>Round ${Number(h.round)||'?'}:</b> ${esc(h.board||'')} · ${esc(h.outcome||'')} · Chameleon: ${esc(h.chameleonName||'?')}</p>`).join('')||'<p>No finished rounds yet.</p>';if(isHost&&!roomData.resultRecorded)recordResult();}
+}
+const inviteRoom=new URLSearchParams(location.search).get('room');if(inviteRoom&&/^[A-HJ-NP-Z2-9]{6}$/.test(inviteRoom.toUpperCase()))$('roomCode').value=inviteRoom.toUpperCase();
+$('createBtn').onclick=createRoom;$('joinBtn').onclick=joinRoom;
+$('copyInvite').onclick=async()=>{const link=inviteUrl();try{await navigator.clipboard.writeText(link);$('copyInvite').textContent='✓ Invite link copied';setTimeout(()=>$('copyInvite').textContent='↗ Copy invite link',2200)}catch{prompt('Copy this invite link:',link)}};
+$('copyCode').onclick=async()=>{try{await navigator.clipboard.writeText(roomId);$('copyCode').textContent='Copied!'}catch{$('copyCode').textContent='Code: '+roomId}};
+$('readyBtn').onclick=async()=>{if(roomRef&&roomData.players?.[uid])await roomRef.child('players/'+uid+'/ready').set(!roomData.players[uid].ready)};
+$('resetReady').onclick=async()=>{if(!isHost)return;const changes={};Object.keys(roomData.players||{}).forEach(id=>changes['players/'+id+'/ready']=false);await roomRef.update(changes)};
+$('difficultyFilter').onchange=renderRoom;
+$('favoriteBoard').onclick=()=>{const b=$('boardSelect').value;const f=getFavs();prefs.favorites=f.includes(b)?f.filter(x=>x!==b):[...f,b];savePrefs();renderRoom()};
+$('randomBoard').onclick=async()=>{if(!isHost)return;const all=Object.keys(roomData.boards||{}),filter=$('difficultyFilter').value,choices=all.filter(n=>filter==='all'||(filter==='favorites'?getFavs().includes(n):difficulty(n)===filter));if(!choices.length)return;const last=roomData.selectedBoard;const eligible=choices.filter(x=>x!==last);await roomRef.child('selectedBoard').set((eligible.length?eligible:choices)[Math.floor(Math.random()*(eligible.length||choices.length))])};
+$('timerStart').onclick=()=>updateTimer('start');$('timerPause').onclick=()=>updateTimer('pause');$('timerPlus').onclick=()=>updateTimer('plus');$('timerReset').onclick=()=>updateTimer('reset');
+$('startBtn').onclick=async()=>{roleShown=false;await startRound()};$('nextPhase').onclick=()=>{if(!isHost)return;roomRef.child('phase').set(roomData.phase==='roles'?'clues':'voting')};$('newRound').onclick=async()=>{if(!isHost)return;roleShown=false;await startRound()};
+$('revealRole').onclick=async()=>{roleShown=!roleShown;playSound(680);if(roleShown)await roomRef.child('roleAcks/'+uid).set(true);renderGame()};
+$('backLobby').onclick=()=>{if(roomData.phase==='lobby'||roomData.phase==='result')setScreen('lobby');else msg('gameMsg','Finish the round before changing boards.','error')};
+$('endRoomBtn').onclick=()=>setScreen('home');
+$('addBoard').onclick=async()=>{
+ const name=$('newBoardName').value.trim().slice(0,32),words=[...new Set($('newWords').value.split('\n').map(x=>x.trim()).filter(Boolean))];
+ if(!name)return msg('customMsg','Give the board a name.','error');
+ if(words.length<5)return msg('customMsg','Add at least 5 different words.','error');
+ if(words.length>200)return msg('customMsg','Keep each board to 200 words or fewer.','error');
+ if(words.some(w=>w.length>80))return msg('customMsg','Keep each word to 80 characters or fewer.','error');
+ if(Object.prototype.hasOwnProperty.call(DEFAULT_BOARDS,name))return msg('customMsg','That name is reserved for a built-in board. Choose another.','error');
+ const button=$('addBoard');button.disabled=true;
+ try{
+   // Use a Firebase transaction so simultaneous contributors cannot overwrite a board.
+   const result=await db.ref('sharedBoards').transaction(current=>{
+     current=current||{};
+     if(Object.values(current).some(b=>b&&b.name&&b.name.toLowerCase()===name.toLowerCase()))return;
+     const key=db.ref('sharedBoards').push().key;
+     current[key]={name,words,createdBy:uid,createdAt:firebase.database.ServerValue.TIMESTAMP};
+     return current;
+   },undefined,false);
+   if(!result.committed)return msg('customMsg','A board with that name already exists. Choose a different name.','error');
+   await roomRef.child('boards/'+name).set(words);
+   if(isHost&&roomData.phase==='lobby')await roomRef.child('selectedBoard').set(name);
+   $('newBoardName').value='';$('newWords').value='';
+   msg('customMsg',`Saved "${name}" permanently! It will be available in new rooms.`, 'success');
+ }catch(e){msg('customMsg','Could not save board: '+e.message+' — check sharedBoards database rules.','error')}
+ finally{button.disabled=false}
+};
+$('submitVote').onclick=async()=>{const id=$('votePick').value;if(!id)return;await roomRef.child('votes/'+uid).set(id);$('voteMsg').textContent='Vote saved. You can change it before the host closes voting.'};
+$('showResults').onclick=async()=>{
+ if(!isHost)return;
+ const votes=roomData.votes||{},counts={};Object.values(votes).forEach(v=>counts[v]=(counts[v]||0)+1);
+ const max=Math.max(0,...Object.values(counts)),leaders=Object.keys(counts).filter(id=>counts[id]===max);
+ const accused=leaders.length===1?leaders[0]:null;
+ await roomRef.update({accused,voteTie:leaders.length!==1,phase:accused===roomData.chameleon?'guess':'result'});
+};
+$('submitGuess').onclick=async()=>{
+ if(uid!==roomData.chameleon||roomData.phase!=='guess')return;
+ const guess=$('guessPick').value;
+ if(!((roomData.boards||{})[roomData.selectedBoard]||[]).includes(guess))return;
+ $('submitGuess').disabled=true;
+ try{await roomRef.update({finalGuess:guess,phase:'result'})}catch(e){$('guessMsg').textContent='Could not submit guess: '+e.message}finally{$('submitGuess').disabled=false}
+};
+
+
+async function recordResult(){
+ if(!isHost||!roomData||roomData.phase!=='result'||roomData.resultRecorded)return;
+ // A transaction prevents duplicate points when the host refreshes or multiple callbacks fire.
+ await roomRef.transaction(data=>{
+  if(!data||data.phase!=='result'||data.resultRecorded)return;
+  const scores=data.scores||{},players=data.players||{},ids=Object.keys(players),cham=data.chameleon;
+  const caught=data.accused===cham,correct=caught&&data.finalGuess===data.secretWord,chamWon=!caught||correct;
+  if(!data.endedEarly){
+   for(const id of ids){const s=scores[id]||{points:0,wins:0,streak:0,bluffs:0,catches:0};const won=id===cham?chamWon:!chamWon;s.points=(s.points||0)+(won?2:0);s.wins=(s.wins||0)+(won?1:0);s.streak=won?(s.streak||0)+1:0;if(id===cham&&chamWon)s.bluffs=(s.bluffs||0)+1;if(id!==cham&&caught&&!correct&&data.votes?.[id]===cham){s.points+=1;s.catches=(s.catches||0)+1}scores[id]=s;}
+  }
+  data.scores=scores;data.history=data.history||{};data.history['round'+data.round]={round:data.round,board:data.selectedBoard,outcome:data.endedEarly?'Ended early':chamWon?'Chameleon wins':'Group wins',chameleonName:players[cham]?.name||'Unknown',at:Date.now()};data.resultRecorded=true;return data;
+ },undefined,false).catch(e=>msg('gameMsg','Could not record score: '+e.message,'error'));
+}
+
+$('forceEndRound').onclick=async()=>{if(!isHost||!roomRef||!roomData||roomData.phase==='lobby')return;if(!confirm('End this round now for everyone? The result will be shown and you can start a new round.'))return;try{await roomRef.update({phase:'result',accused:null,finalGuess:null,endedEarly:true})}catch(e){msg('gameMsg','Could not end round: '+e.message,'error')}};
+$('returnEveryoneLobby').onclick=async()=>{if(!isHost||!roomRef)return;if(!confirm('Return all players to the lobby? This cancels the current round.'))return;try{await roomRef.update({phase:'lobby',votes:{},roleAcks:{},secretWord:null,chameleon:null,finalGuess:null,accused:null,endedEarly:false})}catch(e){msg('gameMsg','Could not return to lobby: '+e.message,'error')}};
+$('skipGuess').onclick=async()=>{
+ if(!isHost||roomData.phase!=='guess')return;
+ if(!confirm('End the Chameleon’s final chance and reveal the result?'))return;
+ try{await roomRef.update({finalGuess:null,phase:'result'})}catch(e){msg('gameMsg','Could not reveal result: '+e.message,'error')}
+};
+
+// Reconnect after refresh on the same browser, without losing the existing anonymous Firebase identity.
+const originalInit=init;init=async function(){await originalInit();if(!db||!uid)return;let code;try{code=sessionStorage.getItem('chameleonRoom')}catch{};if(code&&/^[A-HJ-NP-Z2-9]{6}$/.test(code)){try{const snap=await db.ref('rooms/'+code).get();if(snap.exists()&&snap.val().players?.[uid])await enterRoom(code)}catch(e){console.warn('Rejoin unavailable:',e)}}};
+init();
+</script>
+</body></html>
