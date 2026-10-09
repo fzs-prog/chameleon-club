@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chameleon Club — Remote Party Game</title>
+<style>
+:root{--bg:#f5f6fa;--panel:#fff;--ink:#192235;--muted:#69778e;--lime:#4c6fff;--pink:#e94c91;--line:#e6eaf2;--shadow:0 16px 55px rgba(35,48,80,.07)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% -20%,#e4eaff 0,transparent 53%),var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;color:var(--ink);padding:clamp(12px,3vw,28px);-webkit-font-smoothing:antialiased}
+main{width:min(820px,100%);margin:auto}header{text-align:center;margin:22px 0 26px}h1{font-size:clamp(2.25rem,7vw,3.9rem);line-height:1.08;margin:14px 0 8px;letter-spacing:-.055em;font-weight:800}header p,.hint{color:var(--muted);line-height:1.55}.card{background:rgba(255,255,255,.94);border:1px solid #fff;border-radius:26px;padding:clamp(18px,4vw,30px);margin:16px 0;box-shadow:var(--shadow)}h2{font-size:1.35rem;letter-spacing:-.025em;margin:0 0 15px}h3{letter-spacing:-.02em}label{display:block;color:#5d6980;font-size:.88rem;font-weight:600;margin:15px 0 7px}input,select,textarea,button{font:inherit;border-radius:14px;padding:13px 15px;width:100%;min-height:47px}input,select,textarea{background:#f8f9fc;color:var(--ink);border:1px solid #dfe5ef;outline:none}input:focus,select:focus,textarea:focus{border-color:#6a86ff;box-shadow:0 0 0 4px #4c6fff1c}button{border:0;background:var(--lime);color:white;font-weight:700;cursor:pointer;margin-top:11px;transition:transform .15s,filter .15s,background .15s;box-shadow:0 5px 15px #4c6fff25}button:hover:not(:disabled){filter:brightness(.96);transform:translateY(-1px)}button:active:not(:disabled){transform:scale(.99)}button.secondary{background:#eef1f8;color:#34415a;box-shadow:none}button.pink{background:var(--pink)}button.danger{background:#fff0f2;color:#c73755;box-shadow:none;border:1px solid #ffd6de}button:disabled{opacity:.45;cursor:not-allowed}.row{display:flex;gap:12px;align-items:end}.row>*{flex:1;min-width:0}.hide{display:none!important}.pill{display:inline-block;background:#edf1ff;border-radius:999px;padding:7px 13px;color:#5069c7;font-weight:700;font-size:.75rem;letter-spacing:.035em}.status{text-align:center;color:var(--muted);font-size:.9rem}.secret{text-align:center;border:1px solid #e4e9f7;border-radius:22px;padding:22px 17px;margin:16px 0;background:#f8faff}.word{font-size:clamp(1.7rem,6vw,2.4rem);font-weight:800;color:#425fe3;margin:8px 0;overflow-wrap:anywhere}.players{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}.players span{background:#eef1f8;border-radius:999px;padding:9px 13px;font-weight:600;font-size:.9rem}.players span.me{outline:2px solid #7890ff}.boardPreview{margin:15px 0;border:1px solid var(--line);border-radius:16px;padding:13px}.boardPreview summary{cursor:pointer;color:#4c64c9;font-weight:700}.gameboard{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:14px}.gameboard div{background:#f1f4fb;border:1px solid #e3e8f2;border-radius:13px;padding:15px 7px;text-align:center;font-weight:650;overflow-wrap:anywhere;font-size:.9rem;min-height:54px;display:grid;place-items:center}.boardheader{margin:20px 0 4px;color:#263b8d}.wordrow{display:flex;gap:7px;margin:7px 0}.wordrow input{flex:1}.wordrow button{width:auto;margin:0;background:#eef1f8;color:#34415a}.small{font-size:.83rem}.footer{text-align:center;color:#9ba6b9;font-size:.8rem;margin:24px}.notice{padding:13px 15px;background:#f1f4fb;border-radius:14px;color:#53627d;font-size:.9rem}.error{color:#c73755}.success{color:#23875b}.utility{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}.utility summary{cursor:pointer;font-size:.9rem;color:#67758d;font-weight:650}.utility button{margin-top:10px}.phase-steps{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 18px}.phase-steps span{font-size:.75rem;font-weight:700;border-radius:100px;background:#edf0f6;color:#8a96a8;padding:7px 11px}.phase-steps span.active{background:#e8eeff;color:#3d5fda}.inline-action{width:auto;padding:10px 15px;min-height:42px}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1f293d;color:white;padding:12px 20px;border-radius:15px;box-shadow:0 12px 36px #0003;z-index:10;max-width:90%;text-align:center;font-weight:600}
+@media(max-width:550px){.gameboard{grid-template-columns:repeat(3,minmax(0,1fr))}.gameboard div{font-size:.82rem;padding:11px 5px;min-height:48px}.row{flex-direction:column;align-items:stretch;gap:0}.card{border-radius:22px}.row button{margin-top:10px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+:root{--bg:#f4f6fb;--panel:#fff;--ink:#172139;--muted:#65728a;--line:#e3e8f2;--lime:#526bfa;--pink:#e85a99;--soft:#edf1ff}
+body.dark{--bg:#101521;--panel:#1c2434;--ink:#f2f5ff;--muted:#a8b5cc;--line:#344055;--soft:#28344f;background:radial-gradient(circle at 40% -10%,#27345a,transparent 55%),var(--bg)}
+body.dark .card{background:var(--panel);border-color:var(--line)}body.dark input,body.dark select,body.dark textarea{background:#141c2b;color:var(--ink);border-color:var(--line)}body.dark .notice,body.dark .gameboard div,body.dark .players span,body.dark button.secondary,body.dark .boardPreview,body.dark .secret{background:var(--soft);color:var(--ink);border-color:var(--line)}body.dark label,body.dark .utility summary,body.dark .boardheader{color:var(--muted)}body.dark .pill,body.dark .phase-steps span{background:var(--soft);color:#b7c6ff}body.dark .word{color:#9eafff}body.dark button.danger{background:#4d2834;color:#ffb7c9}
+body{transition:background .25s,color .25s}header{position:relative}h1{letter-spacing:-.06em}.card{border:1px solid var(--line)}.toolbar{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:12px 0}.toolbar button{width:auto;min-height:36px;padding:8px 13px;margin:0;font-size:.82rem;border-radius:999px}.avatar{display:inline-grid;place-items:center;width:29px;height:29px;border-radius:50%;background:#dfe6ff;color:#4159bd;font-weight:800;margin-right:5px}.players span{display:inline-flex;align-items:center}.ready{color:#18865c}.waiting{color:#a87832}.tiny{font-size:.78rem;color:var(--muted)}.statsGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}.statBox{padding:13px;background:var(--soft);border-radius:16px;text-align:center}.statBox strong{display:block;font-size:1.35rem}.statBox small{color:var(--muted)}.timer{font-size:2.3rem;font-weight:800;text-align:center;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.timer.low{color:#d94967}.voteBar{height:9px;background:var(--line);border-radius:30px;overflow:hidden;margin:5px 0 13px}.voteBar i{display:block;background:linear-gradient(90deg,#637aff,#a16fff);height:100%;border-radius:30px;transition:width .7s}.roundHistory{max-height:220px;overflow:auto}.roundHistory p{border-bottom:1px solid var(--line);padding-bottom:8px}.modebar{display:flex;gap:9px;align-items:center;justify-content:center;flex-wrap:wrap}.modebar button{width:auto}.actionGroup{display:flex;gap:10px;flex-wrap:wrap}.actionGroup button{flex:1;min-width:140px}.qrBox{text-align:center}.qrBox img{max-width:200px;border-radius:12px;padding:8px;background:white}.role-flip{animation:roleIn .45s cubic-bezier(.2,.9,.2,1)}@keyframes roleIn{from{opacity:.3;transform:rotateY(70deg) scale(.94)}to{opacity:1;transform:rotateY(0) scale(1)}}.gameboard div{transition:transform .15s}.gameboard div:hover{transform:translateY(-2px)}@media(max-width:550px){.toolbar button{font-size:.76rem}.card{padding:18px}.timer{font-size:2rem}.gameboard{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(prefers-reduced-motion:reduce){.role-flip{animation:none}}
+/* Private Chameleon reveal: only the current player's role screen changes. */
+#rolePanel.chameleon-revealed{position:relative;overflow:hidden;background:linear-gradient(145deg,#073b2a,#08784f 60%,#0b523b);border:2px solid #52e6a0;color:#fff;box-shadow:0 0 0 5px #18bb7830,0 18px 48px #07804a50;animation:chamPulse 2.7s ease-in-out infinite}
+#rolePanel.chameleon-revealed::before{content:"🦎";display:block;font-size:3.5rem;line-height:1.2;margin-bottom:6px;filter:drop-shadow(0 5px 12px #002a1e80)}
+#rolePanel.chameleon-revealed .word{color:#fff!important;font-size:clamp(1.8rem,6vw,2.6rem);text-shadow:0 3px 18px #001d1580}
+#rolePanel.chameleon-revealed .hint{color:#d4ffe8}
+#rolePanel.chameleon-revealed #revealRole{background:#fff;color:#076440;box-shadow:0 5px 20px #002b1b44}
+@keyframes chamPulse{0%,100%{box-shadow:0 0 0 5px #18bb7824,0 18px 48px #07804a40}50%{box-shadow:0 0 0 10px #18bb781a,0 18px 55px #07804a80}}
+@media(prefers-reduced-motion:reduce){#rolePanel.chameleon-revealed{animation:none}}
+/* Floating party chat */
+#chatLauncher{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));z-index:1000;width:60px;height:60px;border-radius:22px;background:#4c6fff;color:white;box-shadow:0 10px 30px #182d7b55;border:0;display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer}
+#chatLauncher.hide{display:none}#chatUnread{position:absolute;right:-4px;top:-5px;background:#f03d72;color:white;border-radius:99px;min-width:23px;height:23px;font-size:12px;display:grid;place-items:center;padding:0 5px;border:2px solid white}
+#chatPanel.chatFloat{position:fixed;right:16px;bottom:88px;z-index:1001;width:min(420px,calc(100vw - 32px));max-height:min(590px,calc(100dvh - 120px));overflow:hidden;display:flex;flex-direction:column;box-shadow:0 18px 65px #0b143a55;margin:0;padding:16px;border-radius:24px}
+#chatPanel.chatFloat.hide{display:none}#chatPanel.chatFloat #chatBody{min-height:0;display:flex;flex-direction:column}#chatPanel.chatFloat #chatBody.hide{display:none}#chatPanel.chatFloat .chatMessages{height:min(310px,35dvh);min-height:120px}#chatPanel.chatFloat .chatComposer{flex-shrink:0}
+@media(max-width:500px){#chatPanel.chatFloat{bottom:84px;right:10px;width:calc(100vw - 20px);max-height:calc(100dvh - 110px)}}
+/* Party chat */
+.chatHead{display:flex;align-items:center;justify-content:space-between;gap:12px}.chatHead button{flex:0 0 auto;margin:0}.chatMessages{height:240px;overflow-y:auto;overscroll-behavior:contain;background:var(--soft,#f3f5fb);border:1px solid var(--line);border-radius:18px;padding:13px;display:flex;flex-direction:column;gap:10px;margin-top:14px}.chatMessage{max-width:88%;align-self:flex-start}.chatMessage.mine{align-self:flex-end}.chatMeta{font-size:.72rem;color:var(--muted);margin:0 8px 4px}.chatBubble{background:var(--panel,#fff);border:1px solid var(--line);border-radius:16px;padding:10px 13px;overflow-wrap:anywhere;line-height:1.4}.chatMessage.mine .chatBubble{background:#4c6fff;color:white;border-color:#4c6fff}.chatComposer{display:flex;gap:8px;margin-top:12px}.chatComposer input{flex:1;min-width:0}.chatComposer button{width:auto;min-width:72px;margin:0}.toolbar{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}.toolbar button{width:auto;margin:0}.chatEmpty{text-align:center;color:var(--muted);font-size:.88rem;margin:auto}.chatMessages .chatMessage{flex-shrink:0}
+
+/* Tap-to-vote and celebratory reaction UI */
+.voteCards{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:11px;margin:15px 0}.voteCandidate{display:flex;align-items:center;gap:10px;text-align:left;min-height:68px;background:var(--soft);color:var(--ink);border:2px solid var(--line);box-shadow:none;margin:0;padding:11px}.voteCandidate.selected{border-color:#526bfa;background:#e8edff;color:#253b8b}.voteCandidate:disabled{opacity:.65}.voteAvatar{display:grid;place-items:center;flex-shrink:0;width:38px;height:38px;border-radius:50%;background:#d9e2ff;color:#344bb5;font-weight:800}.voteCheck{margin-left:auto}.voteLocked{display:flex;flex-direction:column;align-items:center;gap:7px;padding:24px 14px;background:linear-gradient(145deg,#e5fff2,#d8f7e9);border:1px solid #9ce9c1;border-radius:20px;color:#106744;margin:14px 0}.voteLocked strong{font-size:1.3rem}.voteLocked small{color:#367e61}.voteLockIcon{display:grid;place-items:center;background:#17875a;color:white;width:44px;height:44px;border-radius:50%;font-size:1.5rem}.voteResultRow{animation:voteReveal .5s both}.voteResultRow:nth-of-type(2){animation-delay:.4s}.voteResultRow:nth-of-type(3){animation-delay:.8s}.voteResultRow:nth-of-type(4){animation-delay:1.2s}.voteResultRow:nth-of-type(5){animation-delay:1.6s}.voteResultRow:nth-of-type(6){animation-delay:2s}@keyframes voteReveal{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}.reactionBar{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:14px 0}.reactionBar button{width:48px;height:45px;min-height:45px;margin:0;padding:4px;background:var(--soft);color:var(--ink);box-shadow:none;font-size:1.35rem}.reactionToast{position:fixed;left:50%;bottom:155px;transform:translateX(-50%);background:#172139;color:white;padding:14px 22px;border-radius:999px;z-index:1100;font-weight:800;box-shadow:0 12px 40px #0004;animation:voteReveal .3s both;pointer-events:none}body.dark .voteCandidate.selected{background:#273d78;color:white}body.dark .voteLocked{background:#113b2c;color:#d3ffe6;border-color:#227854}body.dark .voteLocked small{color:#b5e8d0}@media(prefers-reduced-motion:reduce){.voteResultRow,.reactionToast{animation:none}}
+
+.liveVoteTally{margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:18px;background:var(--soft)}
+.liveVoteTally h3{margin:0 0 5px;font-size:1.04rem}.liveVoteTally .tallyProgress{margin:0 0 13px;color:var(--muted);font-size:.88rem}
+.liveTallyRow{display:grid;grid-template-columns:minmax(85px,1fr) 2fr 36px;align-items:center;gap:10px;margin:10px 0;font-size:.92rem}
+.liveTallyRow .tallyName{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:650}
+.liveTallyTrack{height:10px;border-radius:999px;background:var(--line);overflow:hidden}.liveTallyFill{height:100%;border-radius:999px;background:linear-gradient(90deg,#5a73fa,#8b6af5);transition:width .35s ease}
+.liveTallyCount{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+.voteTallySetting{padding:13px 15px;border:1px solid var(--line);border-radius:15px;margin:12px 0;background:var(--soft)}.voteTallySwitch{display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:700}.voteTallySwitch input{width:19px;height:19px;flex:none;accent-color:#6675f5}.voteTallySetting p{margin:6px 0 0 29px}
+
+/* Tonight's polish: private role access and recent-party shortcuts */
+#rolePanel.chameleon-revealed{background:linear-gradient(135deg,#042f25,#087e56 58%,#034f3b);outline:3px solid #44e4a2;outline-offset:2px}
+#rolePanel.chameleon-revealed::after{content:'SECRET CHAMELEON ROLE';display:block;font-size:.72rem;letter-spacing:.18em;color:#baffdc;margin-top:12px;font-weight:800}
+#recentParty{margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:18px;background:var(--soft)}
+#recentParty .recentNames{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}#recentParty .recentNames span{background:var(--panel);border:1px solid var(--line);padding:7px 11px;border-radius:99px;font-size:.85rem}
+#recentParty button{margin-top:10px}#rolePanel .rolePrivacy{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;font-weight:800;opacity:.85}
+
+/* Release polish: readable role reveal, mobile tap targets, clear keyboard focus */
+#rolePanel.chameleon-revealed #roleValue{color:#fff!important;text-shadow:0 2px 18px #001c14a8}
+#rolePanel.chameleon-revealed #roleHint{color:#d4ffe8!important}
+#rolePanel.chameleon-revealed{isolation:isolate}
+.voteCandidate{border-radius:18px;transition:transform .15s ease,border-color .15s ease,background .15s ease}
+.voteCandidate:not(:disabled):active{transform:scale(.98)}
+.voteCandidate.selected .voteCheck{color:#365bd8;font-weight:900}
+.voteCandidate:focus-visible,#chatLauncher:focus-visible,.reactionBar button:focus-visible,button:focus-visible{outline:3px solid #4d8dff;outline-offset:3px}
+#voteMsg{min-height:1.4em}
+#chatLauncher{touch-action:manipulation}
+@media(max-width:600px){.voteCards{grid-template-columns:1fr 1fr;gap:9px}.voteCandidate{min-width:0;padding:10px 8px;min-height:74px}.voteCandidate>span:nth-child(2){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.voteAvatar{width:34px;height:34px}.reactionBar button{min-width:46px}.chatComposer input{font-size:16px}}
+@media(max-width:350px){.voteCards{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.voteCandidate{transition:none}#rolePanel.chameleon-revealed{animation:none}}
+/* Original multi-track Chameleon Club Radio */
+.radioPanel{max-width:480px;margin:8px auto 20px;padding:13px 16px;border:1px solid var(--line);border-radius:20px;background:var(--panel);box-shadow:0 8px 28px #14233a0b}
+.radioTop,.radioControls{display:flex;align-items:center;justify-content:space-between;gap:10px}.radioTop strong{font-size:.91rem}.radioTop small{display:block;color:var(--muted);font-size:.76rem;margin-top:3px}.radioControls{justify-content:center;margin-top:10px}.radioControls button{width:auto;min-width:43px;padding:8px 12px;margin:0}.radioVolume{display:flex;align-items:center;gap:9px;font-size:.76rem;color:var(--muted);margin-top:10px}.radioVolume input{flex:1;min-width:0;accent-color:#526bfa}.radioPanel.hide{display:none}
+/* Compact radio: expandable only when needed, even on narrow phones. */
+.radioPanel{max-width:350px;padding:7px 11px;margin:5px auto 12px;border-radius:14px;box-shadow:none}
+.radioTop{min-height:32px}.radioTop strong{font-size:.79rem}.radioTop small{font-size:.7rem;margin-top:1px}
+.radioQuick{display:flex;gap:5px;align-items:center}.radioQuick button{width:32px;min-width:32px;height:30px;padding:3px;margin:0;border-radius:9px;font-size:.84rem}
+.radioDetails{padding-top:6px}.radioDetails.hide{display:none}.radioControls{margin-top:4px}.radioControls button{padding:6px 9px;min-width:37px}
+.radioVolume{margin-top:6px}
+@media(max-width:440px){.radioPanel{max-width:100%;margin:5px auto 10px;padding:6px 10px}.radioTop small{max-width:175px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+
+
+.featureSettings{display:grid;gap:9px;padding:14px;border:1px solid var(--line);border-radius:16px;margin:12px 0}.featureSettings h3{margin:0}.featureSettings select{width:100%}.turnPanel,.clueHistoryPanel{padding:16px;border:1px solid var(--line);border-radius:17px;margin:14px 0;background:var(--card)}.turnTop{display:flex;justify-content:space-between;align-items:center;gap:8px}.turnSpeaker{font-size:clamp(22px,5vw,32px);font-weight:800;margin:12px 0 4px}.turnRoster{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0}.turnRoster span{padding:6px 9px;border-radius:999px;background:var(--bg);font-size:12px}.turnRoster span.current{outline:2px solid #22ad79;background:#dffbea;color:#105d3e}.turnClock{font-weight:800;font-size:25px;color:#20a775;margin:9px 0}.turnClock.urgent{color:#ef4444}.clueComposer{display:flex;gap:8px}.clueComposer.hide{display:none}.clueComposer input{min-width:0;flex:1}.clueComposer button{width:auto}.clueHistoryPanel p{margin:7px 0}.cinematicOverlay{position:fixed;inset:0;z-index:1000;background:radial-gradient(circle at 50% 40%,#135d46,#061e19 65%,#03120e);color:white;display:flex;align-items:center;justify-content:center;text-align:center;padding:25px}.cinematicOverlay.hide{display:none}.cinematicInner{animation:revealRise .5s ease-out}.cinematicSymbol{font-size:70px;filter:drop-shadow(0 0 30px #3ceaa0)}.cinematicKicker{font-size:12px;letter-spacing:4px;color:#b6f3d8;margin-top:14px}.cinematicCount{font-size:100px;font-weight:900;line-height:1.2;color:#e8fff2}.cinematicCaption{font-size:20px;font-weight:700}@keyframes revealRise{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}@media(prefers-reduced-motion:reduce){.cinematicInner{animation:none}}@media(max-width:480px){.clueComposer{flex-wrap:wrap}.clueComposer button{width:100%}}
+
+/* Collaborative doodle lounge: compact, responsive, touch-friendly */
+#drawLauncher{position:fixed;right:max(17px,env(safe-area-inset-right));bottom:max(88px,calc(env(safe-area-inset-bottom) + 72px));z-index:1000;width:52px;height:52px;border-radius:19px;padding:0;margin:0;box-shadow:0 9px 24px #142b5440;background:#1d9d80;color:white;font-size:23px}
+#drawPanel{position:fixed;right:12px;bottom:151px;z-index:1002;width:min(480px,calc(100vw - 24px));max-height:min(690px,calc(100dvh - 165px));overflow:auto;margin:0;padding:16px;border-radius:22px;box-shadow:0 22px 70px #101d3a50}
+.drawHead{display:flex;align-items:center;justify-content:space-between;gap:8px}.drawHead h3{margin:0;font-size:1.05rem}.drawHead button{width:auto;margin:0;min-height:38px;padding:7px 12px}
+.drawTools{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:12px 0 9px}.drawTools button{width:auto;margin:0;min-height:37px;padding:7px 10px;font-size:.78rem}.drawTools button:focus-visible{outline:2px solid #238e75;outline-offset:2px}
+.drawColors{display:flex;gap:6px;flex-wrap:wrap}.drawColors button{width:27px;height:27px;min-height:27px;border-radius:50%;padding:0;margin:0;border:2px solid #ffffff;box-shadow:0 0 0 1px #a6b0c1}.drawColors button.selected{outline:3px solid #249e7f;outline-offset:2px}
+#drawCanvas{position:relative;z-index:1;pointer-events:auto;display:block;width:100%;aspect-ratio:4/3;background:#fff;border:1px solid #dce3ee;border-radius:14px;touch-action:none;cursor:crosshair;user-select:none}
+.drawFoot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px}.drawFoot .hint{margin:0;font-size:.75rem}.drawFoot button{width:auto;margin:0;min-height:36px;padding:7px 11px;font-size:.8rem}
+@media(max-width:500px){#drawLauncher{right:15px;bottom:max(85px,calc(env(safe-area-inset-bottom) + 70px))}#drawPanel{right:8px;bottom:145px;width:calc(100vw - 16px);padding:12px;max-height:calc(100dvh - 155px)}.drawTools{gap:5px}.drawTools button{padding:7px 9px}}
+</style>
+</head>
+<body><main>
+<header><div class="pill">THE SOCIAL DEDUCTION GAME</div><h1>Chameleon Club<span style="color:#4c6fff">.</span></h1><p>One secret word. One brilliant bluffer. Your favourite people.</p><div class="toolbar"><button id="themeToggle" class="secondary">◐ Dark mode</button><button id="soundToggle" class="secondary">♫ Sound off</button><button id="musicToggle" class="secondary">♪ Music off</button></div><div class="radioPanel" id="radioPanel" aria-label="Chameleon Club Radio"><div class="radioTop"><div class="radioIdentity"><strong>♫ Radio</strong><small id="radioTrack">Clubhouse Groove · 1 / 10</small></div><div class="radioQuick"><button class="secondary" id="radioQuickPlay" type="button" aria-label="Play music">▶</button><button class="secondary" id="radioExpand" type="button" aria-expanded="false" aria-controls="radioDetails" aria-label="Expand radio controls">⌄</button></div></div><div id="radioDetails" class="radioDetails hide"><div class="radioControls"><button class="secondary" id="radioPrev" title="Previous track" aria-label="Previous track">⏮</button><button id="radioPlay" title="Play or pause music">▶ Play</button><button class="secondary" id="radioNext" title="Next track" aria-label="Next track">⏭</button><button class="secondary" id="radioShuffle" title="Shuffle tracks" aria-pressed="false">⇄</button></div><label class="radioVolume">Volume <input id="radioVolume" type="range" min="0" max="100" value="35" aria-label="Music volume"><span id="radioVolumeValue">35%</span></label></div></div></header>
+<div id="configWarning" class="card hide"><h2>One-time setup needed</h2><p class="hint">This copy needs your Firebase project settings added before it can create remote rooms. Follow SETUP.md in the download, then upload the edited index.html to free hosting.</p></div>
+<section class="card" id="home">
+<h2>Join the party</h2>
+<label for="name">Your player name</label><input id="name" maxlength="20" placeholder="e.g. Fares">
+<div class="row"><div><label for="roomCode">Room code (if joining)</label><input id="roomCode" maxlength="6" placeholder="e.g. K7P9Q2" autocapitalize="characters"></div><div><label for="action"> </label><button id="joinBtn" class="secondary">Join room</button></div></div>
+<button id="createBtn">Create a new room</button>
+<p class="hint small">Everyone joins on their own phone or computer. Use a voice call (Discord, FaceTime, etc.) to talk while playing.</p>
+<div id="homeMsg" class="hint"></div><div id="recentParty" class="hide"><strong>👥 Your recent party</strong><p class="hint small">Names of people you played with on this device. No account required.</p><div id="recentNames" class="recentNames"></div><button type="button" id="rejoinRecent" class="secondary">↗ Rejoin last room</button><p class="hint small">For tonight: share the room invite link with friends. A permanent cross-device friends list will need player accounts.</p></div>
+</section>
+<section class="card hide" id="lobby">
+<div class="row"><div><h2>Room <span id="codeLabel"></span></h2><p class="hint">Share this code with your friends.</p></div><div><button id="copyCode" class="secondary">Copy room code</button></div></div>
+<button id="copyInvite" class="secondary">↗ Copy invite link</button><div id="lobbyStatus" class="notice">Waiting for players…</div>
+<div class="players" id="playerList"></div><button id="readyBtn" class="secondary">✓ I’m ready</button><div id="readyStatus" class="tiny"></div><details class="boardPreview"><summary>Invite with QR code</summary><div class="qrBox" id="qrBox"></div></details><div id="lobbyStats" class="statsGrid"></div>
+<div id="boardBrowser">
+<p class="hint small" id="boardBrowseHint">Browse the boards together. The host chooses which board will be played.</p>
+<label for="difficultyFilter">Board difficulty</label><select id="difficultyFilter"><option value="all">All difficulties</option><option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option><option value="custom">Community boards</option><option value="favorites">★ Favourites</option></select><label for="boardSelect">Choose a board</label><select id="boardSelect"></select><p class="hint small" id="boardCount"></p><details class="boardPreview" id="liveBoardPreview" open><summary>Live board preview — visible to everyone</summary><p id="liveBoardTitle" class="hint small"></p><div id="boardPreviewWords" class="gameboard"></div></details>
+<div id="hostControls" class="hide"><div class="voteTallySetting"><label class="voteTallySwitch"><input type="checkbox" id="showLiveVoteSetting"><span>Show live vote totals during voting</span></label><p class="hint small">Optional · Off by default. When off, players only see how many people have voted. Final results still show the totals.</p></div><div class="featureSettings"><h3>🎙️ Clues & reveals</h3><label class="voteTallySwitch"><input type="checkbox" id="turnOrderSetting" checked><span>Random turn order (recommended)</span></label><p class="hint small">Each round has a shared speaking order. Works in person, on Discord, or on a phone call.</p><label for="clueTimerSetting">Time per speaker</label><select id="clueTimerSetting"><option value="0">Off — no time limit</option><option value="15">15 seconds</option><option value="30">30 seconds</option><option value="60">60 seconds</option></select><label class="voteTallySwitch"><input type="checkbox" id="cinematicSetting" checked><span>Cinematic voting reveal</span></label><label class="voteTallySwitch"><input type="checkbox" id="typedCluesSetting"><span>Allow players to type clues</span></label><label class="voteTallySwitch"><input type="checkbox" id="clueHistorySetting"><span>Show shared clue history</span></label><p class="hint small">Typed clues and clue history are both off by default for a cleaner game screen. No microphone access required.</p></div><div class="featureSettings" id="chaosSettings"><h3>🦎 Surprise Me · Chaos rounds</h3><label class="voteTallySwitch"><input type="checkbox" id="chaosEnabled"><span>Enable surprise rounds</span></label><p class="hint small">Off by default. The host plays without knowing which round type was selected.</p><div id="chaosOptions" class="hide"><label for="chaosChance">Chance of a special round: <strong id="chaosChanceLabel">15%</strong></label><input id="chaosChance" type="range" min="5" max="100" step="5" value="15"><p class="hint small">Tick the special modes you want in the random pool:</p><label class="voteTallySwitch"><input type="checkbox" id="chaosTwo" checked><span>Two Chameleons</span></label><label class="voteTallySwitch"><input type="checkbox" id="chaosAll" checked><span>Everyone is a Chameleon</span></label><p class="hint small">Normal rounds remain in the mix unless the chance is 100%. If only Everyone is ticked, the game never picks Two Chameleons.</p></div></div><div class="actionGroup"><button id="favoriteBoard" class="secondary">☆ Favourite board</button><button id="randomBoard" class="secondary">⤨ Random board</button><button id="resetReady" class="secondary">Reset ready checks</button></div><div class="row"><button id="startBtn">Start round</button><button id="endRoomBtn" class="secondary">Back to menu</button></div>
+</div>
+<p class="hint small">Host controls rounds and board selection. Everyone can contribute boards to the permanent shared library.</p>
+<div id="customEditor">
+<h3>Add your own board</h3>
+<label for="newBoardName">Board name</label><input id="newBoardName" maxlength="32" placeholder="e.g. Inside jokes">
+<label for="newWords">Words (one per line; add at least 5)</label><textarea id="newWords" rows="4" placeholder="Your mate's catchphrase&#10;A famous meme&#10;A game character&#10;..."></textarea>
+<button id="addBoard" class="secondary">Save board permanently for everyone</button><div id="customMsg" class="hint small"></div>
+</div>
+</section>
+<section class="card hide" id="game">
+<div class="row"><div><div class="pill" id="roundLabel">ROUND 1</div><h2 id="gameTitle">Secret roles</h2></div><div><button id="backLobby" class="secondary">Room / boards</button></div></div>
+<section id="boardDisplay"><h3 class="boardheader" id="boardDisplayTitle">Word board</h3><p class="hint small">Everyone sees the same words. Only non-Chameleons know which one is secret.</p><div id="gameBoardWords" class="gameboard"></div></section>
+<div id="phaseSteps" class="phase-steps"></div><div id="timerPanel" class="notice hide"><div class="timer" id="timerValue">01:00</div><p class="tiny" style="text-align:center;margin:3px">Discussion countdown</p><div id="timerHost" class="actionGroup hide"><button id="timerStart" class="secondary">Start / resume</button><button id="timerPause" class="secondary">Pause</button><button id="timerPlus" class="secondary">+30 seconds</button><select id="timerPreset"><option value="30">30 seconds</option><option value="60" selected>60 seconds</option><option value="90">90 seconds</option><option value="120">120 seconds</option></select><button id="timerReset" class="secondary">Reset timer</button></div></div><div id="rolePanel" class="secret"><p class="rolePrivacy">🔒 Private — only visible on your device</p><p class="hint">Only reveal this when you are alone. Keep your screen private.</p><div class="word" id="roleValue">Ready?</div><p id="roleHint" class="hint"></p><button id="revealRole">Reveal my secret</button></div>
+<div id="cluePanel" class="hide"><h3>Give one clue each</h3><div id="turnPanel" class="turnPanel hide" aria-live="polite"><div class="turnTop"><span class="pill">🎙️ Speaking order</span><span id="turnProgress"></span></div><div id="turnSpeaker" class="turnSpeaker"></div><div id="turnNext" class="hint"></div><div id="turnClock" class="turnClock hide"></div><div id="turnRoster" class="turnRoster"></div><button id="finishTurn" class="secondary hide">✓ I've given my clue</button><button id="skipTurn" class="secondary hide">Skip speaker (host)</button></div><div id="clueHistoryPanel" class="clueHistoryPanel hide"><h3>📝 Clues (optional)</h3><div id="clueEntries"></div><form id="clueForm" class="clueComposer"><input id="clueInput" maxlength="80" placeholder="Type the clue you gave aloud" aria-label="Your clue"><button type="submit">Add clue</button></form></div><p class="hint">Take turns saying one clue out loud. Don't make it too obvious.</p><div id="phaseInfo" class="notice"></div><div id="voteControls" class="hide"><h3>Who is the Chameleon?</h3><p class="hint small">Tap a player to select them, then lock in your vote. The host chooses whether live totals are visible. Voter identities stay hidden.</p><div id="voteCards" class="voteCards"></div><select id="votePick" class="hide" aria-label="Selected player"></select><button id="submitVote" disabled>Lock in my vote</button><div id="voteLocked" class="voteLocked hide" role="status"></div><p id="voteMsg" class="hint"></p><div id="liveVoteTally" class="liveVoteTally" aria-live="polite"></div></div><div id="hostVoteControls" class="hide"><button id="showResults">Close voting</button></div><div id="guessPanel" class="secret hide"><h3>🦎 Final chance!</h3><p id="guessInfo" class="hint"></p><div id="guessControls" class="hide"><label for="guessPick">Choose the secret word from the board</label><select id="guessPick"></select><button id="submitGuess" class="pink">Submit guess & reveal result</button><p id="guessMsg" class="hint"></p></div><div id="hostGuessControls" class="hide"><p class="hint">Only the Chameleon can submit a guess. If they cannot continue, the host can end the round without a guess.</p><button id="skipGuess" class="secondary">Reveal result without guess</button></div></div><div id="voteBreakdown" class="hide"></div><div id="cinematicOverlay" class="cinematicOverlay hide" role="status" aria-live="polite"><div class="cinematicInner"><div class="cinematicSymbol">🦎</div><div class="cinematicKicker">THE VOTES ARE IN</div><div id="cinematicCountdown" class="cinematicCount">3</div><div class="cinematicCaption">Who is hiding among you?</div></div></div><div id="reactionBar" class="reactionBar hide"><span class="tiny">React</span><button type="button" data-reaction="😂">😂</button><button type="button" data-reaction="👀">👀</button><button type="button" data-reaction="🦎">🦎</button><button type="button" data-reaction="🤨">🤨</button></div><div id="reactionToast" class="reactionToast hide"></div><div id="results" class="secret hide"></div><div id="scoreboard" class="hide"><h3>🏆 Leaderboard</h3><div id="scoreList" class="statsGrid"></div><details class="boardPreview"><summary>Round history</summary><div id="historyList" class="roundHistory"></div></details></div></div>
+<button id="chatLauncher" class="hide" type="button" aria-label="Open party chat">💬<span id="chatUnread" class="hide">0</span></button><section id="chatPanel" class="card chatFloat hide"><div class="chatHead"><div><h3 style="margin:0">💬 Party chat</h3><p class="hint small" style="margin:4px 0">Chat with everyone in this room. Keep the secret word private!</p></div><button id="chatCollapse" class="secondary inline-action" type="button">Hide</button></div><div id="chatBody"><div id="chatMessages" class="chatMessages" role="log" aria-live="polite"></div><form id="chatForm" class="chatComposer"><input id="chatInput" maxlength="220" autocomplete="off" placeholder="Say something fun…" aria-label="Chat message"><button type="submit" class="inline-action">Send</button></form><p id="chatStatus" class="hint small" style="margin:5px 0 0"></p></div></section><div id="roundHostControls" class="hide"><button id="nextPhase">Start clues</button><button id="newRound" class="secondary hide">New round</button></div><details class="utility" id="roundUtilities"><summary>⚙ Round controls & troubleshooting</summary><p class="hint small">Host only: safely end a stuck round or return everyone to the lobby. Your shared boards are never deleted.</p><button id="forceEndRound" class="danger">End round now</button><button id="returnEveryoneLobby" class="secondary">Return everyone to lobby</button></details><div id="gameMsg" class="hint"></div>
+</section>
+
+<button id="drawLauncher" class="hide" type="button" aria-label="Open shared doodle board" title="Draw together">✏️</button>
+<section id="drawPanel" class="card hide" aria-label="Shared drawing board">
+ <div class="drawHead"><div><h3>✏️ Doodle together</h3><p class="hint small" style="margin:3px 0">A shared canvas — host and guests can draw</p></div><button id="drawClose" class="secondary" type="button">Close</button></div>
+ <div class="drawTools"><div class="drawColors" id="drawColors" aria-label="Pen colours"></div><button id="drawEraser" class="secondary" type="button">Eraser</button><button id="drawSize" class="secondary" type="button">Pen: M</button><button id="drawUndo" class="secondary" type="button">Undo mine</button></div>
+ <canvas id="drawCanvas" width="800" height="600" aria-label="Collaborative drawing surface. Draw with finger, mouse, or stylus."></canvas>
+ <div class="drawFoot"><p id="drawStatus" class="hint" role="status">Draw with a finger, mouse or stylus.</p><button id="drawClear" class="danger hide" type="button">Clear all (host)</button></div>
+</section>
+<div class="footer">Made for friends • No app install • Keep the room code private</div>
+</main>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+// Firebase web app configuration (public client settings).
+const firebaseConfig = {
+  apiKey: "AIzaSyD-bfkEdTx_qkPqp0SGKuMBt9BxjWPY-6s",
+  authDomain: "chameleon-club.firebaseapp.com",
+  databaseURL: "https://chameleon-club-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "chameleon-club",
+  storageBucket: "chameleon-club.firebasestorage.app",
+  messagingSenderId: "977252905972",
+  appId: "1:977252905972:web:1c98cd7e63a133bee63fa1"
+};
+const DEFAULT_BOARDS = {
+  "Mixed bag":["Pizza","A beach","Minecraft","A penguin","A casino","Taylor Swift","A school","A dragon","A supermarket","A wedding","A haunted house","A spaceship","A superhero","A birthday party","A robot","A secret agent","A rollercoaster","A snowman","A magician","A museum"],
+  "Pokémon":["Pikachu","Charizard","Mewtwo","Eevee","Snorlax","Gengar","Psyduck","Lucario","Greninja","Ditto","Magikarp","Umbreon","Mimikyu","Rayquaza","Bulbasaur","Jigglypuff","Gyarados","Meowth","Dragonite","Piplup","Team Rocket","Poké Ball"],
+  "Gaming":["Minecraft","Mario Kart","Fortnite","Chess","Monopoly","The Sims","Among Us","Call of Duty","League of Legends","Tetris","Animal Crossing","Cluedo","Pac-Man","Rocket League","GTA","Elden Ring","Roblox","Wii Sports","Fall Guys","Stardew Valley"],
+  "Films & TV":["Shrek","Breaking Bad","The Office","Harry Potter","Star Wars","SpongeBob","The Simpsons","Jurassic Park","The Lion King","Stranger Things","The Matrix","Home Alone","Batman","Friends","Toy Story","Squid Game","The Lord of the Rings","Finding Nemo","The Avengers","Peaky Blinders"],
+  "Food":["Pizza","Sushi","Tacos","Ice cream","Pancakes","Curry","Popcorn","Chocolate","Burger","Doughnut","Watermelon","Coffee","Cheese","Ramen","Fish and chips","Bubble tea","Lasagne","Nachos","Croissant","Hot dog"],
+  "Animals":["Penguin","Tiger","Octopus","Giraffe","Fox","Dolphin","Koala","Shark","Frog","Owl","Crocodile","Panda","Eagle","Hedgehog","Kangaroo","Turtle","Wolf","Flamingo","Sloth","Bat"],
+  "Places":["London","Tokyo","New York","A beach","A zoo","A school","A casino","A hospital","A museum","A supermarket","Paris","A space station","A football stadium","A theme park","A library","A desert","A cruise ship","A cinema","A castle","An airport"],
+  "Football":["A penalty","VAR","A red card","A corner kick","A goalkeeper","The World Cup","A derby","A hat-trick","A transfer deadline","A football chant","A referee","A bicycle kick","A free kick","Extra time","A manager getting sacked","A Panenka","A clean sheet","A nutmeg","A trophy parade","An own goal"],
+  "Memes & internet":["Rickroll","Doge","Distracted boyfriend","NPC livestream","Skibidi Toilet","Keyboard warrior","Touch grass","Main character energy","Rage quit","Doomscrolling","A viral dance","A reaction GIF","A group chat","A hot take","A conspiracy theory","A meme coin","A bot account","A cringe compilation","A streamer","A comment section"]
+};
+const EXTRA_BOARDS = {"Countries":["Canada","Brazil","Japan","Italy","Egypt","India","Australia","Mexico","France","Kenya","Norway","Argentina","South Korea","Greece","Morocco","Iceland"],"Capital cities":["London","Paris","Tokyo","Rome","Madrid","Berlin","Ottawa","Cairo","Seoul","Bangkok","Lisbon","Dublin","Athens","Oslo","Hanoi","Vienna"],"Sports":["Tennis","Basketball","Rugby","Cricket","Swimming","Boxing","Cycling","Golf","Hockey","Skiing","Baseball","Surfing","Volleyball","Archery","Badminton","Fencing"],"Jobs":["Teacher","Doctor","Pilot","Chef","Plumber","Firefighter","Dentist","Lawyer","Photographer","Farmer","Mechanic","Architect","Journalist","Librarian","Astronaut","Barber"],"At the beach":["Suncream","Sandcastle","Lifeguard","Surfboard","Seagull","Beach towel","Flip-flops","Bucket","Shell","Ice lolly","Waves","Umbrella","Sunglasses","Rock pool","Snorkel","Beach ball"],"Weather":["Thunderstorm","Rainbow","Hail","Fog","Blizzard","Heatwave","Tornado","Drizzle","Hurricane","Snowflake","Sunshine","Lightning","Cloud","Wind","Frost","Monsoon"],"Musical instruments":["Guitar","Piano","Violin","Drums","Trumpet","Flute","Saxophone","Harp","Cello","Clarinet","Trombone","Banjo","Ukulele","Harmonica","Tambourine","Accordion"],"Transport":["Bicycle","Train","Aeroplane","Ferry","Taxi","Submarine","Tram","Helicopter","Scooter","Motorbike","Bus","Hot-air balloon","Cruise ship","Rocket","Skateboard","Cable car"],"Superheroes":["Spider-Man","Batman","Wonder Woman","Superman","Iron Man","Thor","Hulk","Black Panther","Flash","Aquaman","Wolverine","Deadpool","Captain Marvel","Doctor Strange","Storm","Green Lantern"],"Villains":["Joker","Thanos","Darth Vader","Loki","Voldemort","Ursula","Scar","Maleficent","Bowser","Cruella","Green Goblin","Magneto","Hades","Sauron","Venom","Harley Quinn"],"Desserts":["Brownie","Cheesecake","Tiramisu","Apple pie","Macaron","Éclair","Gelato","Cupcake","Pudding","Churros","Baklava","Mochi","Trifle","Waffle","Crème brûlée","Doughnut"],"Drinks":["Tea","Coffee","Lemonade","Milkshake","Smoothie","Hot chocolate","Cola","Orange juice","Iced tea","Bubble tea","Water","Apple juice","Energy drink","Coconut water","Ginger ale","Mocktail"],"Household objects":["Lamp","Sofa","Mirror","Kettle","Toaster","Clock","Cushion","Vacuum","Curtain","Remote control","Wardrobe","Iron","Mug","Bookshelf","Fan","Doormat"],"School days":["Homework","Detention","Playground","Assembly","Uniform","Exam","Lunchbox","Whiteboard","School bus","Library","Science lab","Headteacher","Pencil case","Sports day","School trip","Report card"],"Fantasy worlds":["Dragon","Wizard","Potion","Castle","Elf","Goblin","Sword","Spellbook","Unicorn","Treasure","Portal","Troll","Knight","Fairy","Dungeon","Phoenix"],"Space":["Mars","Saturn","Moon","Astronaut","Comet","Black hole","Galaxy","Meteor","Space station","Telescope","Rocket","Nebula","Alien","Orbit","Spacesuit","Asteroid"],"Wildlife habitats":["Rainforest","Savannah","Coral reef","Desert","Tundra","Wetland","Grassland","Jungle","Mountain","River","Ocean","Cave","Arctic","Swamp","Woodland","Mangrove"],"Technology":["Laptop","Smartphone","Keyboard","Drone","Smartwatch","Router","Printer","Webcam","Tablet","Headphones","Microchip","USB stick","VR headset","Bluetooth","Robot","Touchscreen"],"Famous landmarks":["Eiffel Tower","Big Ben","Statue of Liberty","Colosseum","Taj Mahal","Pyramids","Great Wall","Sydney Opera House","Stonehenge","Mount Rushmore","Burj Khalifa","Christ the Redeemer","Machu Picchu","Sagrada Família","Golden Gate Bridge","Leaning Tower"],"Party time":["Birthday cake","Confetti","Balloon","DJ","Party hat","Dance floor","Invitation","Piñata","Party popper","Karaoke","Photo booth","Fancy dress","Disco ball","Gift bag","Playlist","Surprise party"]};
+Object.assign(DEFAULT_BOARDS, EXTRA_BOARDS, {"Board games": ["Scrabble", "Risk", "Catan", "Uno", "Jenga", "Twister", "Cluedo", "Monopoly", "Chess", "Checkers", "Connect Four", "Guess Who", "Battleship", "Operation", "Trivial Pursuit", "Pictionary"], "British things": ["Sunday roast", "Queue", "Tea bag", "Red bus", "Fish and chips", "Raincoat", "Pub quiz", "Biscuit", "Postbox", "Roundabout", "Crumpet", "Double-decker", "Wellington boots", "High street", "Kettle", "Football scarf"], "On holiday": ["Passport", "Suitcase", "Hotel buffet", "Sunscreen", "Boarding pass", "Beach towel", "Pool", "Souvenir", "Flight delay", "Tour guide", "Sun lounger", "Airport security", "Cruise ship", "Travel adapter", "Cocktail umbrella", "Postcard"], "At the cinema": ["Popcorn", "Trailer", "Ticket", "Screen", "3D glasses", "Seat", "Nachos", "Credits", "Projector", "Horror film", "Romance", "Action scene", "Cinema usher", "Aisle", "Premiere", "Intermission"], "Mythical creatures": ["Dragon", "Phoenix", "Unicorn", "Mermaid", "Centaur", "Griffin", "Kraken", "Werewolf", "Vampire", "Troll", "Goblin", "Minotaur", "Fairy", "Cyclops", "Basilisk", "Yeti"], "Video game items": ["Health potion", "Shield", "Pickaxe", "Treasure chest", "Sword", "Map", "Key", "Power-up", "Coin", "Portal", "Armour", "Magic wand", "Bow", "Backpack", "Controller", "Checkpoint"], "Breakfast": ["Toast", "Cereal", "Porridge", "Croissant", "Pancake", "Waffle", "Omelette", "Bacon", "Sausage", "Egg", "Bagel", "Muffin", "Yoghurt", "Fruit salad", "Hash brown", "Jam"], "Under the sea": ["Coral", "Octopus", "Shark", "Dolphin", "Jellyfish", "Sea turtle", "Starfish", "Seahorse", "Crab", "Lobster", "Shipwreck", "Submarine", "Pearl", "Seaweed", "Clam", "Stingray"], "At a wedding": ["Bride", "Groom", "Bouquet", "Best man", "Wedding cake", "Vows", "First dance", "Ring", "Confetti", "Speech", "Photographer", "Bridesmaid", "Reception", "Guest book", "Veil", "Honeymoon"], "Famous inventions": ["Light bulb", "Telephone", "Aeroplane", "Printing press", "Internet", "Wheel", "Camera", "Radio", "Microwave", "Television", "Compass", "Steam engine", "Battery", "Calculator", "Bicycle", "Refrigerator"], "Street food": ["Taco", "Kebab", "Hot dog", "Falafel", "Churros", "Bao bun", "Crepe", "Pretzel", "Dumpling", "Corn dog", "Samosa", "Burrito", "Satay", "Fish taco", "Spring roll", "Loaded fries"], "Outer space missions": ["Moon landing", "Rocket launch", "Satellite", "Spacewalk", "Mission control", "Lunar rover", "Space shuttle", "Mars rover", "Space station", "Astronaut", "Telescope", "Space suit", "Orbit", "Countdown", "Capsule", "Launch pad"], "At the gym": ["Treadmill", "Dumbbell", "Bench press", "Yoga mat", "Skipping rope", "Squat", "Exercise bike", "Water bottle", "Locker", "Protein shake", "Pull-up bar", "Kettlebell", "Rowing machine", "Stretching", "Resistance band", "Personal trainer"], "Pets": ["Dog", "Cat", "Hamster", "Rabbit", "Parrot", "Goldfish", "Guinea pig", "Turtle", "Ferret", "Budgie", "Gecko", "Mouse", "Horse", "Snake", "Chinchilla", "Hedgehog"], "Magic tricks": ["Rabbit", "Top hat", "Playing card", "Wand", "Disappearing act", "Levitation", "Trapdoor", "Illusion", "Smoke", "Coin trick", "Handcuffs", "Magic box", "Dove", "Mind reading", "Mirror", "Rope trick"], "In the kitchen": ["Saucepan", "Frying pan", "Spatula", "Whisk", "Oven", "Fridge", "Blender", "Toaster", "Colander", "Chopping board", "Rolling pin", "Measuring cup", "Apron", "Microwave", "Peeler", "Ladle"], "Winter activities": ["Skiing", "Snowboarding", "Ice skating", "Snowball fight", "Sledding", "Snowman", "Hot chocolate", "Winter hike", "Snow angel", "Ski lift", "Igloo", "Ice hockey", "Curling", "Snow boots", "Fireplace", "Frozen lake"], "At the zoo": ["Elephant", "Lion", "Penguin", "Giraffe", "Zebra", "Meerkat", "Hippo", "Gorilla", "Flamingo", "Crocodile", "Panda", "Tiger", "Otter", "Rhino", "Koala", "Lemur"], "Internet culture": ["Livestream", "Hashtag", "Viral video", "Influencer", "Podcast", "Meme", "Emoji", "Group chat", "Selfie", "Reaction video", "Comment", "Algorithm", "Subscriber", "Screenshot", "Filter", "Notification"], "Camping trip": ["Tent", "Campfire", "Sleeping bag", "Torch", "Marshmallow", "Compass", "Hiking boots", "Backpack", "Lantern", "Camping stove", "Mosquito", "Map", "Trail", "Water bottle", "Picnic", "Binoculars"]} );
+const $=id=>document.getElementById(id);
+let app,db,uid,roomRef,roomId,roomData,unsubscribe=null,isHost=false,roleShown=false,myVote=null,seenRound=0,previousPhase='',timerInterval=null;
+const STORE='chameleonClubPrefsV2';let prefs={};try{prefs=JSON.parse(localStorage.getItem(STORE)||'{}')}catch{};
+function savePrefs(){try{localStorage.setItem(STORE,JSON.stringify(prefs))}catch{}}
+function playSound(freq=520){if(!prefs.sound)return;try{const a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.frequency.value=freq;o.type='sine';g.gain.setValueAtTime(.06,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.16);o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+.17);setTimeout(()=>a.close(),400)}catch{}}
+// Five original, locally synthesised instrumental loops. No audio downloads or external services.
+const RADIO_TRACKS=[
+ {name:'Clubhouse Groove',bpm:98,roots:[261.63,220,174.61,196],melody:[0,2,4,2,1,2,4,5],wave:'sine'},
+ {name:'Midnight Mischief',bpm:92,roots:[220,174.61,196,164.81],melody:[4,2,1,2,0,1,2,4],wave:'sine'},
+ {name:'Sneaky Business',bpm:102,roots:[196,164.81,174.61,146.83],melody:[0,3,2,4,3,2,1,0],wave:'sine'},
+ {name:'Easy Does It',bpm:84,roots:[174.61,220,196,261.63],melody:[0,1,2,4,2,1,0,2],wave:'sine'},
+ {name:'One More Round',bpm:100,roots:[246.94,196,220,164.81],melody:[0,2,4,5,4,2,1,2],wave:'sine'},
+ {name:'Cloud Nine',bpm:78,roots:[220,261.63,196,174.61],melody:[0,1,4,2,1,0,2,1],wave:'sine'},
+ {name:'Soft Focus',bpm:86,roots:[196,246.94,220,174.61],melody:[2,4,2,0,1,2,0,1],wave:'sine'},
+ {name:'Little Lanterns',bpm:82,roots:[261.63,196,220,174.61],melody:[0,2,1,4,2,1,0,1],wave:'sine'},
+ {name:'Sunday Stroll',bpm:90,roots:[174.61,196,261.63,220],melody:[0,1,2,1,4,2,1,0],wave:'sine'},
+ {name:'Afterglow',bpm:80,roots:[246.94,220,196,261.63],melody:[4,2,1,0,2,1,0,1],wave:'sine'}
+];
+let musicCtx=null,musicLoop=null,musicGain=null,musicStep=0,radioExpanded=false,radioIndex=Number(prefs.radioIndex)||0,radioShuffle=!!prefs.radioShuffle;
+radioIndex=Math.max(0,Math.min(RADIO_TRACKS.length-1,radioIndex));
+function radioVolume(){return Math.max(0,Math.min(1,(Number(prefs.radioVolume)??35)/100))}
+function musicNote(frequency,when,duration,volume=.035,type='sine'){
+ if(!musicCtx||!musicGain)return;
+ const o=musicCtx.createOscillator(),g=musicCtx.createGain();o.type=type;o.frequency.setValueAtTime(frequency,when);
+ g.gain.setValueAtTime(.0001,when);g.gain.linearRampToValueAtTime(volume,when+.025);g.gain.exponentialRampToValueAtTime(.0001,when+duration);
+ o.connect(g);g.connect(musicGain);o.start(when);o.stop(when+duration+.04);
+}
+function radioNextTrack(delta=1){
+ if(radioShuffle&&delta>0){const next=Math.floor(Math.random()*(RADIO_TRACKS.length-1));radioIndex=(radioIndex+1+next)%RADIO_TRACKS.length}
+ else radioIndex=(radioIndex+delta+RADIO_TRACKS.length)%RADIO_TRACKS.length;
+ musicStep=0;prefs.radioIndex=radioIndex;savePrefs();renderRadio();
+ if(musicLoop){clearInterval(musicLoop);musicLoop=null;musicBeat();musicLoop=setInterval(musicBeat,60000/RADIO_TRACKS[radioIndex].bpm/2)}
+}
+function musicBeat(){
+ if(!musicCtx)return;
+ if(musicStep>=64){radioNextTrack(1);return}
+ const t=RADIO_TRACKS[radioIndex],root=t.roots[Math.floor(musicStep/16)%4],scale=[1,9/8,5/4,4/3,3/2,5/3,15/8,2];
+ const now=musicCtx.currentTime+.015,beat=60/t.bpm;
+ const note=t.melody[Math.floor(musicStep/2)%t.melody.length];
+ if(musicStep%2===0)musicNote(root*scale[note],now,beat*.75,.026,t.wave);
+ if(musicStep%4===0)musicNote(root/2,now,beat*1.5,.019,'sine');
+ if(musicStep%8===0){[1,5/4,3/2].forEach((r,i)=>musicNote(root*r,now+i*.018,beat*2.2,.007,'sine'))}
+ if(musicStep%4===2)musicNote(root*2,now,beat*.13,.004,'sine');
+ musicStep++;
+}
+function stopMusic(){if(musicLoop){clearInterval(musicLoop);musicLoop=null}if(musicCtx){const ctx=musicCtx;musicCtx=null;ctx.close().catch(()=>{})}musicGain=null;renderRadio()}
+function startMusic(){
+ try{stopMusic();musicCtx=new (window.AudioContext||window.webkitAudioContext)();musicGain=musicCtx.createGain();musicGain.gain.value=radioVolume()*.62;musicGain.connect(musicCtx.destination);musicStep=0;
+ musicCtx.resume().catch(()=>{});musicBeat();musicLoop=setInterval(musicBeat,60000/RADIO_TRACKS[radioIndex].bpm/2);renderRadio()}
+ catch(e){stopMusic();prefs.music=false;savePrefs();applyTheme()}
+}
+function renderRadio(){
+ const track=$('radioTrack');if(!track)return;
+ track.textContent=RADIO_TRACKS[radioIndex].name+' · '+(radioIndex+1)+' / '+RADIO_TRACKS.length;
+ $('radioPlay').textContent=prefs.music?'Ⅱ Pause':'▶ Play';$('radioQuickPlay').textContent=prefs.music?'Ⅱ':'▶';$('radioQuickPlay').setAttribute('aria-label',prefs.music?'Pause music':'Play music');$('radioExpand').textContent=radioExpanded?'⌃':'⌄';$('radioExpand').setAttribute('aria-expanded',String(radioExpanded));$('radioDetails').classList.toggle('hide',!radioExpanded);
+ $('radioShuffle').setAttribute('aria-pressed',String(radioShuffle));$('radioShuffle').style.opacity=radioShuffle?'1':'.55';
+ const v=Number.isFinite(Number(prefs.radioVolume))?Number(prefs.radioVolume):35;
+ $('radioVolume').value=String(v);$('radioVolumeValue').textContent=v+'%';
+}
+function applyTheme(){document.body.classList.toggle('dark',prefs.dark===true);$('themeToggle').textContent=prefs.dark?'☼ Light mode':'◐ Dark mode';$('soundToggle').textContent=prefs.sound?'♫ Sound on':'♫ Sound off';$('musicToggle').textContent=prefs.music?'♪ Music on':'♪ Music off';$('musicToggle').setAttribute('aria-pressed',String(!!prefs.music));$('musicToggle').style.borderColor=prefs.music?'#39aa82':''}
+function getFavs(){return prefs.favorites||[]}
+function difficulty(name){if(!Object.prototype.hasOwnProperty.call(DEFAULT_BOARDS,name))return 'custom';if(['Mixed bag','Animals','Food','Places','Countries','Sports','Jobs','At the beach','Weather','Transport','Drinks','Household objects','School days','Party time'].includes(name))return 'easy';if(['Pokémon','Gaming','Films & TV','Football','Memes & internet','Villains','Fantasy worlds','Technology','Famous landmarks','Capital cities'].includes(name))return 'hard';return 'medium'}
+function scoreOf(id){return (roomData.scores||{})[id]||{points:0,wins:0,streak:0,bluffs:0,catches:0}}
+function winnerInfo(){const caught=roomData.isChameleon(accused),correct=caught&&roomData.finalGuess===roomData.secretWord;return {caught,correct,chamWon:!caught||correct}}
+function avatar(name){return esc((name||'?').trim().slice(0,1).toUpperCase())}
+function inviteUrl(){return location.origin+location.pathname+'?room='+encodeURIComponent(roomId)}
+function ensureTimer(){if(timerInterval)return;timerInterval=setInterval(()=>{if(roomData&&roomData.phase==='clues')renderTimer()},250)}
+function renderTimer(){if(!roomData)return;const t=roomData.timer||{remaining:60,running:false};let seconds=Math.max(0,Math.ceil((t.remaining||0)-(t.running?(Date.now()-(t.startedAt||Date.now()))/1000:0)));$('timerValue').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');$('timerValue').classList.toggle('low',seconds<=10);}
+async function updateTimer(action){if(!isHost||roomData.phase!=='clues')return;const t=roomData.timer||{remaining:60,running:false},left=Math.max(0,(t.remaining||0)-(t.running?(Date.now()-(t.startedAt||Date.now()))/1000:0));let v;if(action==='start')v={remaining:left||Number($('timerPreset').value),running:true,startedAt:Date.now()};if(action==='pause')v={remaining:left,running:false,startedAt:null};if(action==='plus')v={remaining:left+30,running:t.running,startedAt:Date.now()};if(action==='reset')v={remaining:Number($('timerPreset').value),running:false,startedAt:null};await roomRef.child('timer').set(v);}
+
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function msg(id,t,cls=''){ $(id).className='hint '+cls;$(id).textContent=t||''; }
+function configured(){return firebaseConfig.apiKey!=="PASTE_API_KEY_HERE"&&firebaseConfig.projectId!=="PASTE_PROJECT_ID_HERE"&&firebaseConfig.databaseURL!=="PASTE_DATABASE_URL_HERE";}
+function randomCode(){const chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";return Array.from({length:6},()=>chars[Math.floor(Math.random()*chars.length)]).join('')}
+function shuffle(a){let x=[...a];for(let i=x.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
+function recentParty(){try{return JSON.parse(localStorage.getItem('chameleonRecentParty')||'{}')}catch{return {}}}
+function saveRecentParty(){if(!roomData||!roomId)return;const names=[...new Set(Object.values(roomData.players||{}).map(p=>p.name).filter(Boolean))].slice(0,24);try{localStorage.setItem('chameleonRecentParty',JSON.stringify({code:roomId,names,at:Date.now()}))}catch{};renderRecentParty()}
+function renderRecentParty(){const r=recentParty(),el=$('recentParty');if(!el)return;el.classList.toggle('hide',!r.code);$('recentNames').innerHTML=(r.names||[]).map(n=>`<span>${esc(n)}</span>`).join('');$('rejoinRecent').textContent='↗ Rejoin room '+(r.code||'')}
+function getName(){return $('name').value.trim().slice(0,20)}
+async function init(){
+ applyTheme();renderRadio();$('name').value=prefs.name||'';renderRecentParty();$('rejoinRecent').onclick=()=>{const r=recentParty();if(!r.code)return;$('roomCode').value=r.code;joinRoom()};
+ $('themeToggle').onclick=()=>{prefs.dark=!prefs.dark;savePrefs();applyTheme()};$('soundToggle').onclick=()=>{prefs.sound=!prefs.sound;savePrefs();applyTheme();playSound()};$('musicToggle').onclick=()=>{prefs.music=!prefs.music;savePrefs();applyTheme();renderRadio();if(prefs.music)startMusic();else stopMusic()};
+ $('radioPlay').onclick=()=>{prefs.music=!prefs.music;savePrefs();applyTheme();renderRadio();if(prefs.music)startMusic();else stopMusic()};$('radioQuickPlay').onclick=()=>$('radioPlay').click();$('radioExpand').onclick=()=>{radioExpanded=!radioExpanded;renderRadio()};
+ $('radioNext').onclick=()=>radioNextTrack(1);$('radioPrev').onclick=()=>radioNextTrack(-1);
+ $('radioShuffle').onclick=()=>{radioShuffle=!radioShuffle;prefs.radioShuffle=radioShuffle;savePrefs();renderRadio()};
+ $('radioVolume').oninput=()=>{prefs.radioVolume=Number($('radioVolume').value);savePrefs();if(musicGain)musicGain.gain.value=radioVolume()*.62;renderRadio()};
+
+
+ if(!configured()){ $('configWarning').classList.remove('hide');$('createBtn').disabled=true;$('joinBtn').disabled=true;return}
+ try{app=firebase.initializeApp(firebaseConfig);db=firebase.database();const cred=await firebase.auth().signInAnonymously();uid=cred.user.uid;}
+ catch(e){$('homeMsg').textContent='Connection setup error: '+e.message+' — check SETUP.md and Firebase settings.';$('createBtn').disabled=true;$('joinBtn').disabled=true}
+}
+function setScreen(id){['home','lobby','game'].forEach(x=>$(x).classList.toggle('hide',x!==id))}
+async function createRoom(){
+ const name=getName();prefs.name=name;savePrefs();if(!name)return msg('homeMsg','Enter your name first.','error');
+ try{let code;for(let i=0;i<8;i++){code=randomCode();const snap=await db.ref('rooms/'+code).get();if(!snap.exists())break}
+ const boardObj={};Object.entries(DEFAULT_BOARDS).forEach(([k,v])=>boardObj[k]=v);
+ const sharedSnap=await db.ref('sharedBoards').get();
+ sharedSnap.forEach(child=>{const entry=child.val();if(entry&&typeof entry.name==='string'&&Array.isArray(entry.words)&&entry.words.length>=5){boardObj[entry.name]=entry.words}});
+ const data={host:uid,createdAt:Date.now(),players:{[uid]:{name,joinedAt:Date.now(),ready:false}},boards:boardObj,selectedBoard:'Mixed bag',showLiveVoteTally:false,turnOrderEnabled:true,clueTurnSeconds:0,cinematicReveal:true,clueHistoryEnabled:false,typedCluesEnabled:false,chaosEnabled:false,chaosChance:15,chaosTwo:true,chaosAll:true,round:0,phase:'lobby',chameleon:null,secretWord:null,votes:{},roleAcks:{},endedEarly:false,scores:{},history:{},recentBoards:{},timer:{remaining:60,running:false}};
+ await db.ref('rooms/'+code).set(data);await enterRoom(code);}catch(e){msg('homeMsg','Could not create room: '+e.message,'error')}
+}
+async function joinRoom(){
+ const name=getName();prefs.name=name;savePrefs();const code=$('roomCode').value.trim().toUpperCase();if(!name)return msg('homeMsg','Enter your name first.','error');if(!/^[A-HJ-NP-Z2-9]{6}$/.test(code))return msg('homeMsg','Enter the six-character room code.','error');
+ try{const ref=db.ref('rooms/'+code),snap=await ref.get();if(!snap.exists())return msg('homeMsg','Room not found. Check the code with your host.','error');await ref.child('players/'+uid).update({name,joinedAt:Date.now(),ready:false});await enterRoom(code)}catch(e){msg('homeMsg','Could not join: '+e.message,'error')}
+}
+async function enterRoom(code){
+ roomId=code;lastChatSignature='';drawSignature='';drawStrokes=[];drawOpen=false;try{sessionStorage.setItem('chameleonRoom',code)}catch{};roomRef=db.ref('rooms/'+code);isHost=false;myVote=null;roleShown=false;
+ if(unsubscribe)roomRef.off('value',unsubscribe);
+ unsubscribe=roomRef.on('value',snap=>{if(!snap.exists()){msg('homeMsg','This room no longer exists.');setScreen('home');return}roomData=snap.val();isHost=roomData.host===uid;if(roomData.phase!==previousPhase){selectedVote=null;if(previousPhase)playSound(roomData.phase==='result'?880:560);previousPhase=roomData.phase;roleShown=false}renderRoom()});
+ setScreen('lobby');
+}
+let selectedVote=null,lastReactionSignature='',reactionTimeout=null;
+let lastChatSignature='',chatCollapsed=false,chatOpen=false,chatSeenAt=Date.now(),chatUnreadCount=0;
+function renderChat(){
+ const panel=$('chatPanel');if(!panel)return;const active=!!roomData&&roomData.phase!=='lobby';$('chatLauncher').classList.toggle('hide',!active);panel.classList.toggle('hide',!active||!chatOpen);if(!active){chatOpen=false;return;}
+ const entries=Object.entries(roomData.chat||{}).sort((a,b)=>(a[1].at||0)-(b[1].at||0)).slice(-70),signature=entries.map(([k,v])=>k+':'+(v.text||'')).join('|');
+ const unread=entries.filter(([k,v])=>v.uid!==uid&&(v.at||0)>chatSeenAt).length;chatUnreadCount=unread;
+ $('chatUnread').textContent=unread>99?'99+':String(unread);$('chatUnread').classList.toggle('hide',!unread||chatOpen);
+ $('chatLauncher').setAttribute('aria-label',unread?`Open party chat, ${unread} unread messages`:'Open party chat');
+ if(signature===lastChatSignature)return;lastChatSignature=signature;
+ const box=$('chatMessages'),nearBottom=box.scrollHeight-box.scrollTop-box.clientHeight<85;
+ box.innerHTML=entries.length?entries.map(([key,v])=>`<div class="chatMessage ${v.uid===uid?'mine':''}"><div class="chatMeta">${esc(v.name||'Player')} · ${new Date(v.at||Date.now()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div><div class="chatBubble">${esc(v.text||'')}</div></div>`).join(''):'<p class="chatEmpty">No messages yet. Break the ice! 🎉</p>';
+ if(nearBottom||entries[entries.length-1]?.[1]?.uid===uid)box.scrollTop=box.scrollHeight;
+}
+function renderReactions(){
+ const entries=Object.entries(roomData?.reactions||{}).sort((a,b)=>(a[1].at||0)-(b[1].at||0));
+ const recent=entries.slice(-1)[0];if(!recent||recent[0]===lastReactionSignature)return;
+ lastReactionSignature=recent[0];const item=recent[1];if(Date.now()-(item.at||0)>8000)return;
+ const box=$('reactionToast');box.textContent=(item.emoji||'')+' '+(item.name||'Player');box.classList.remove('hide');clearTimeout(reactionTimeout);reactionTimeout=setTimeout(()=>box.classList.add('hide'),2100);
+}
+document.querySelectorAll('[data-reaction]').forEach(btn=>btn.onclick=async()=>{if(!roomRef||!roomData||roomData.phase==='lobby')return;const emoji=btn.dataset.reaction;if(!['😂','👀','🦎','🤨'].includes(emoji))return;btn.disabled=true;try{await roomRef.child('reactions').push({uid,name:roomData.players?.[uid]?.name||'Player',emoji,at:firebase.database.ServerValue.TIMESTAMP})}catch(e){console.warn(e)}finally{setTimeout(()=>btn.disabled=false,1200)}});
+function renderRoom(){
+ if(!roomData)return;
+ renderChat();renderDoodles();
+ if(roomData.phase==='lobby'||roomData.phase==='result')saveRecentParty();
+ $('codeLabel').textContent=roomId;
+ const players=Object.entries(roomData.players||{}),ready=players.filter(([id,p])=>p.ready).length;
+ $('lobbyStatus').textContent=`${players.length} players · ${ready} ready`;
+ $('playerList').innerHTML=players.map(([id,p])=>`<span class="${id===uid?'me':''}"><b class="avatar">${avatar(p.name)}</b>${esc(p.name)} ${id===roomData.host?'★':''} ${p.ready?'<span class="ready">✓</span>':'<span class="waiting">○</span>'}${id===uid?' (you)':''}</span>`).join('');
+ $('readyBtn').textContent=roomData.players?.[uid]?.ready?'✓ Ready — tap to undo':'○ Mark myself ready';
+ $('readyStatus').textContent=players.length<3?'At least 3 players required.':'All players should tap Ready before the host starts.';
+ $('hostControls').classList.toggle('hide',!isHost);$('showLiveVoteSetting').checked=roomData.showLiveVoteTally===true;
+ $('turnOrderSetting').checked=roomData.turnOrderEnabled!==false;$('clueTimerSetting').value=String(roomData.clueTurnSeconds||0);$('cinematicSetting').checked=roomData.cinematicReveal!==false;$('clueHistorySetting').checked=roomData.clueHistoryEnabled===true;$('typedCluesSetting').checked=roomData.typedCluesEnabled===true;
+ $('startBtn').disabled=!isHost||players.length<3||ready!==players.length;
+ const all=Object.keys(roomData.boards||{}).sort((a,b)=>a.localeCompare(b)),filter=$('difficultyFilter').value;
+ let names=all.filter(n=>filter==='all'||(filter==='favorites'?getFavs().includes(n):difficulty(n)===filter));
+ if(!names.length)names=all;
+ $('boardSelect').innerHTML=names.map(b=>`<option value="${esc(b)}">${esc(b)}${getFavs().includes(b)?' ★':''}</option>`).join('');
+ // Always show the host's actual selected board to every player, even if their personal filter excludes it.
+ if(roomData.selectedBoard&&!names.includes(roomData.selectedBoard)){
+   const option=document.createElement('option');option.value=roomData.selectedBoard;option.textContent=roomData.selectedBoard+' (host selection)';$('boardSelect').prepend(option);
+ }
+ $('boardSelect').value=roomData.selectedBoard||names[0]||'';
+ $('boardSelect').onchange=()=>{if(isHost)roomRef.child('selectedBoard').set($('boardSelect').value)};
+ $('boardSelect').disabled=!isHost;
+ $('boardBrowseHint').textContent=isHost?'Changing this board updates the preview for everyone in the lobby.':'You are following the host’s live board selection. The host controls which board is played.';
+ const selected=$('boardSelect').value,preview=(roomData.boards||{})[selected]||[];
+ $('boardCount').textContent=`${all.length} boards · ${preview.length} words · ${difficulty(selected)} difficulty`;
+ $('liveBoardTitle').textContent=`Now previewing: ${selected||'No board selected'}`;
+ if(roomData.phase==='lobby')$('liveBoardPreview').open=true;
+ $('boardPreviewWords').innerHTML=preview.map(w=>`<div>${esc(w)}</div>`).join('');
+ $('favoriteBoard').textContent=getFavs().includes(selected)?'★ Unfavourite board':'☆ Favourite board';
+ const link=inviteUrl();$('qrBox').innerHTML=`<p class="tiny">Scan to join room ${esc(roomId)}</p><img alt="Room invitation QR code" loading="lazy" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(link)}"><p class="tiny">QR code uses a third-party image service. Use Copy invite link if offline.</p>`;
+ $('lobbyStats').innerHTML=players.map(([id,p])=>`<div class="statBox"><strong>${scoreOf(id).points||0}</strong><small>${esc(p.name)} · points</small></div>`).join('');
+ if(isHost&&roomData.phase==='lobby'&&!roomData.boards?.['Camping trip']){const updates={};for(const [name,words] of Object.entries(DEFAULT_BOARDS)){if(!roomData.boards?.[name])updates['boards/'+name]=words;}if(Object.keys(updates).length)roomRef.update(updates).catch(console.warn)}renderChaosSettings();if(roomData.phase==='lobby')setScreen('lobby');else{setScreen('game');renderGame()}
+}
+function chameleonIds(data=roomData){return Array.isArray(data?.chameleons)?data.chameleons:(data?.chameleon?[data.chameleon]:[])}
+function isChameleon(id,data=roomData){return chameleonIds(data).includes(id)}
+async function startRound(){
+ const ps=Object.entries(roomData.players||{});if(ps.length<3){alert('You need at least 3 players.');return}
+ const board=roomData.selectedBoard,words=(roomData.boards||{})[board]||[];if(words.length<5){alert('This board needs at least 5 words.');return}
+ const recent=roomData.recentBoards||{},unused=words.filter(w=>!(recent[board]||[]).includes(w)),pool=unused.length?unused:words;const secretWord=pool[Math.floor(Math.random()*pool.length)];
+ const ids=ps.map(([id])=>id);let roundMode='classic';
+ if(roomData.chaosEnabled&&Math.random()*100<Math.min(100,Math.max(0,Number(roomData.chaosChance)||15))){const allowed=[];if(roomData.chaosTwo&&ids.length>=3)allowed.push('two');if(roomData.chaosAll)allowed.push('all');if(allowed.length)roundMode=allowed[Math.floor(Math.random()*allowed.length)];}
+ const shuffled=[...ids].sort(()=>Math.random()-.5);const chams=roundMode==='all'?ids:roundMode==='two'?shuffled.slice(0,2):shuffled.slice(0,1);const cham=chams[0];const order=ps.map(([id])=>id);for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
+ await roomRef.update({round:(roomData.round||0)+1,phase:'roles',chameleon:cham,chameleons:chams,roundMode,secretWord,votes:{},roleAcks:{},clueOrder:order,clueTurnIndex:0,clueTurnAt:Date.now(),clueEntries:{},revealAt:null,finalGuess:null,accused:null,startedAt:Date.now(),endedEarly:false,voteTie:false,resultRecorded:false,timer:{remaining:60,running:false},['recentBoards/'+board]:[...(recent[board]||[]).slice(-7),secretWord]});
+}
+let turnClockInterval=null,cinematicInterval=null;
+function renderTurnOrder(){
+ const active=roomData.phase==='clues'&&roomData.turnOrderEnabled!==false;
+ $('turnPanel').classList.toggle('hide',!active);if(!active)return;
+ const order=(roomData.clueOrder||[]).filter(id=>roomData.players?.[id]);if(!order.length)return;
+ const idx=Math.min(Number(roomData.clueTurnIndex)||0,order.length);const done=idx>=order.length;
+ const speaker=done?null:order[idx];const next=order[idx+1];
+ $('turnProgress').textContent=done?'Everyone finished':`Turn ${idx+1} of ${order.length}`;
+ $('turnSpeaker').textContent=done?'✓ All clues given':`${roomData.players[speaker]?.name||'Player'}'s turn`;
+ $('turnNext').textContent=done?'Host can now open voting.':next?`Up next: ${roomData.players[next]?.name||'Player'}`:'Last speaker — voting is next.';
+ $('turnRoster').innerHTML=order.map((id,i)=>`<span class="${i===idx?'current':''}">${i<idx?'✓ ':''}${esc(roomData.players[id]?.name||'Player')}</span>`).join('');
+ $('finishTurn').classList.toggle('hide',done||!(speaker===uid||isHost));
+ $('skipTurn').classList.toggle('hide',done||!isHost||speaker===uid);
+ const seconds=Number(roomData.clueTurnSeconds)||0;$('turnClock').classList.toggle('hide',!seconds||done);
+ if(seconds&&!done){const update=()=>{if(!roomData||roomData.phase!=='clues')return;const remain=Math.max(0,Math.ceil(seconds-(Date.now()-(roomData.clueTurnAt||Date.now()))/1000));$('turnClock').textContent=remain+'s to give your clue';$('turnClock').classList.toggle('urgent',remain<=5)};update();if(!turnClockInterval)turnClockInterval=setInterval(update,500)}
+}
+function renderClueHistory(){
+ const canType=roomData.phase==='clues'&&roomData.typedCluesEnabled===true;
+ const showHistory=roomData.phase==='clues'&&roomData.clueHistoryEnabled===true;
+ $('clueHistoryPanel').classList.toggle('hide',!canType&&!showHistory);
+ $('clueForm').classList.toggle('hide',!canType);
+ $('clueEntries').classList.toggle('hide',!showHistory);
+ if(!canType&&!showHistory)return;
+ const entries=Object.values(roomData.clueEntries||{}).sort((a,b)=>(a.at||0)-(b.at||0));
+ $('clueEntries').innerHTML=entries.map(x=>`<p><b>${esc(roomData.players?.[x.uid]?.name||'Player')}:</b> ${esc(x.text||'')}</p>`).join('')||'<p class="hint small">No clues recorded yet.</p>';
+}
+// Short ascending countdown cues. Each second sounds once per device, regardless of Firebase rerenders.
+let revealSoundKey='',revealSoundSecond=-1;
+function countdownCue(second){
+ if(!prefs.sound)return;
+ try{
+  const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return;
+  const ctx=musicCtx&&musicCtx.state==='running'?musicCtx:new Audio();
+  const t=ctx.currentTime+.012,osc=ctx.createOscillator(),gain=ctx.createGain();
+  osc.type='triangle';osc.frequency.setValueAtTime(second===3?440:second===2?554:740,t);
+  osc.frequency.exponentialRampToValueAtTime(second===1?1040:second===2?740:580,t+.13);
+  gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.085,t+.018);
+  gain.gain.exponentialRampToValueAtTime(.0001,t+.23);
+  osc.connect(gain);gain.connect(ctx.destination);osc.start(t);osc.stop(t+.24);
+  if(ctx!==musicCtx)setTimeout(()=>ctx.close().catch(()=>{}),550);
+ }catch(e){console.warn('Countdown audio unavailable',e)}
+}
+function renderCinematicReveal(){
+ const at=Number(roomData.revealAt)||0;
+ const active=roomData.cinematicReveal!==false&&['guess','result'].includes(roomData.phase)&&at>0&&Date.now()-at<3200;
+ const overlay=$('cinematicOverlay');overlay.classList.toggle('hide',!active);
+ if(!active){if(cinematicInterval){clearInterval(cinematicInterval);cinematicInterval=null}return}
+ const key=roomId+':'+at;
+ if(revealSoundKey!==key){revealSoundKey=key;revealSoundSecond=-1}
+ const tick=()=>{
+  const remain=Math.max(0,Math.ceil((3200-(Date.now()-at))/1000));
+  $('cinematicCountdown').textContent=String(remain);
+  if(remain>=1&&remain<=3&&remain!==revealSoundSecond){revealSoundSecond=remain;countdownCue(remain)}
+  if(!remain){overlay.classList.add('hide');clearInterval(cinematicInterval);cinematicInterval=null}
+ };
+ tick();if(!cinematicInterval)cinematicInterval=setInterval(tick,120);
+}
+async function advanceClueTurn(){if(!roomData||roomData.phase!=='clues'||roomData.turnOrderEnabled===false)return;const order=roomData.clueOrder||[],idx=Number(roomData.clueTurnIndex)||0;if(idx>=order.length||!(uid===order[idx]||isHost))return;await roomRef.child('clueTurnIndex').transaction(current=>Math.min(order.length,(Number(current)||0)+1));await roomRef.child('clueTurnAt').set(firebase.database.ServerValue.TIMESTAMP)}
+function renderGame(){
+ const boardName=roomData.selectedBoard||'Mixed bag';
+ const boardWords=(roomData.boards||{})[boardName]||[];
+ $('boardDisplayTitle').textContent=boardName+' — Word board';
+ $('gameBoardWords').innerHTML=boardWords.map(w=>`<div>${esc(w)}</div>`).join('');
+ $('roundLabel').textContent='ROUND '+(roomData.round||1);$('roundUtilities').classList.toggle('hide',!isHost);const steps=[['roles','Roles'],['clues','Clues'],['voting','Voting'],['guess','Final guess'],['result','Result']];$('phaseSteps').innerHTML=steps.map(([key,label])=>`<span class="${roomData.phase===key?'active':''}">${label}</span>`).join('');$('roundHostControls').classList.toggle('hide',!isHost);$('nextPhase').classList.toggle('hide',!isHost||!['roles','clues'].includes(roomData.phase));$('nextPhase').textContent=roomData.phase==='roles'?'Start clues':'Open voting';$('newRound').classList.toggle('hide',!isHost||roomData.phase!=='result');$('gameTitle').textContent=roomData.phase==='roles'?'Secret roles':roomData.phase==='clues'?'Clues & discussion':roomData.phase==='voting'?'Vote for the Chameleon':roomData.phase==='guess'?'Chameleon’s final guess':'Round result';
+ $('rolePanel').classList.toggle('hide',!['roles','clues'].includes(roomData.phase));if(!['roles','clues'].includes(roomData.phase))$('rolePanel').classList.remove('chameleon-revealed');$('timerPanel').classList.toggle('hide',roomData.phase!=='clues');renderTurnOrder();renderClueHistory();renderCinematicReveal();$('timerHost').classList.toggle('hide',!isHost);renderTimer();ensureTimer();
+ $('cluePanel').classList.toggle('hide',roomData.phase==='roles');
+ if(['roles','clues'].includes(roomData.phase)){
+   const seen=roomData.roleAcks&&roomData.roleAcks[uid];$('roleValue').textContent=roleShown?(isChameleon(uid)?'YOU ARE THE CHAMELEON':roomData.secretWord):'Ready?';
+   $('roleValue').style.color=roleShown&&isChameleon(uid)?'#ffffff':'var(--lime)';
+   $('roleHint').textContent=roleShown?(isChameleon(uid)?'You do not know the word. Listen to clues and bluff!':'Give a subtle clue that shows you know the word, without saying it outright.'):'Tap reveal when you are somewhere private.';
+   $('revealRole').textContent=roleShown?'Hide my secret':'Reveal my secret';$('rolePanel').classList.toggle('role-flip',roleShown);$('rolePanel').classList.toggle('chameleon-revealed',roleShown&&isChameleon(uid));
+   if(seen&&!roleShown&&roomData.phase==='roles'){$('roleHint').textContent='Role acknowledged. You can privately reveal it again if needed.'}
+ } else {
+   $('phaseInfo').textContent=roomData.phase==='clues'?'Take turns giving one clue out loud. When everyone has spoken, the host opens voting.':roomData.phase==='voting'?(roomData.showLiveVoteTally===true?'Vote for the Chameleon. Live totals are visible, but individual votes remain private.':'Vote for the Chameleon. Vote totals stay hidden until the results.'):'The round has ended.';
+   $('voteControls').classList.toggle('hide',roomData.phase!=='voting');
+   $('guessPanel').classList.toggle('hide',roomData.phase!=='guess');
+   if(roomData.phase==='guess'){
+    const isCham=isChameleon(uid)&&roomData.accused===uid;
+    $('guessInfo').textContent=isCham?'You were caught! Pick one word from the board. Your answer is final.':'The Chameleon was caught! Wait for their final guess before the secret word is revealed.';
+    $('guessControls').classList.toggle('hide',!isCham);
+    $('hostGuessControls').classList.toggle('hide',!isHost);
+    $('guessMsg').textContent='';
+    if(isCham){$('guessPick').innerHTML=boardWords.map(w=>`<option value="${esc(w)}">${esc(w)}</option>`).join('')}
+   }
+   $('hostVoteControls').classList.toggle('hide',!(isHost&&roomData.phase==='voting'));
+   if(roomData.phase==='voting'){
+    const locked=roomData.votes?.[uid],candidates=Object.entries(roomData.players||{}).filter(([id])=>id!==uid);
+    $('voteCards').innerHTML=candidates.map(([id,p])=>`<button type="button" class="voteCandidate ${selectedVote===id?'selected':''}" data-vote-id="${esc(id)}" ${locked?'disabled':''}><span class="voteAvatar">${avatar(p.name)}</span><span>${esc(p.name)}</span><span class="voteCheck">${selectedVote===id?'✓':'○'}</span></button>`).join('');
+    $('voteCards').classList.toggle('hide',!!locked);$('submitVote').classList.toggle('hide',!!locked);$('submitVote').disabled=!selectedVote||!!locked;
+    $('voteLocked').classList.toggle('hide',!locked);$('voteLocked').innerHTML=locked?`<span class="voteLockIcon">✓</span><strong>Vote locked in</strong><span>You voted for ${esc(roomData.players?.[locked]?.name||'a player')}.</span><small>Waiting for the rest of the group…</small>`:'';
+    $('voteMsg').textContent=locked?`${Object.keys(roomData.votes||{}).length} of ${Object.keys(roomData.players||{}).length} votes locked · Your choice is final.`:`${Object.keys(roomData.votes||{}).length} of ${Object.keys(roomData.players||{}).length} players have voted. Your choice is private.`;
+    const tallies={};Object.values(roomData.votes||{}).forEach(id=>{if(roomData.players?.[id])tallies[id]=(tallies[id]||0)+1});
+    const submitted=Object.keys(roomData.votes||{}).length,playerCount=Object.keys(roomData.players||{}).length;
+    const maxVotes=Math.max(1,...Object.values(tallies));
+    $('liveVoteTally').classList.toggle('hide',roomData.showLiveVoteTally!==true);
+    $('liveVoteTally').innerHTML=`<h3>🗳️ Live vote tally</h3><p class="tallyProgress">${submitted} of ${playerCount} votes locked · Counts update for everyone</p>`+
+      Object.entries(roomData.players||{}).sort((a,b)=>(tallies[b[0]]||0)-(tallies[a[0]]||0)).map(([id,p])=>`<div class="liveTallyRow"><span class="tallyName">${esc(p.name)}</span><div class="liveTallyTrack"><div class="liveTallyFill" style="width:${Math.round((tallies[id]||0)/maxVotes*100)}%"></div></div><span class="liveTallyCount">${tallies[id]||0}</span></div>`).join('');
+    $('voteCards').querySelectorAll('[data-vote-id]').forEach(btn=>btn.onclick=()=>{selectedVote=btn.dataset.voteId;renderGame()});
+   }
+   if(roomData.phase==='result'){
+    const caught=isChameleon(roomData.accused),correct=caught&&roomData.finalGuess===roomData.secretWord;
+    const mode=roomData.roundMode||'classic',chams=chameleonIds(),names=chams.map(id=>esc(roomData.players?.[id]?.name||'Unknown')).join(', ');
+    const chamWon=mode==='all'?true:!caught||correct;
+    $('results').classList.remove('hide');
+    $('results').innerHTML=roomData.endedEarly?`<div class="word">Round ended early</div><p>No points awarded.</p>`:mode==='all'?`<div class="word">🦎 PLOT TWIST!</div><h3>EVERYONE WAS A CHAMELEON!</h3><p>Nobody knew the secret word. This is a bonus round — no points awarded.</p><p>The word was <b>${esc(roomData.secretWord)}</b>.</p>`:`<div class="word" style="color:${chamWon?'var(--pink)':'var(--lime)'}">${chamWon?'🦎 Chameleons win!':'🎉 Group wins!'}</div><p>${mode==='two'?'The two Chameleons were':'The Chameleon was'} <b>${names}</b>.</p><p>The secret word was <b>${esc(roomData.secretWord)}</b>.</p><p>${caught?`Caught ${esc(roomData.players?.[roomData.accused]?.name||'a Chameleon')}. Final guess: <b>${esc(roomData.finalGuess||'No guess')}</b> — ${correct?'correct!':'incorrect.'}`:'The group did not catch a Chameleon.'}</p>${mode==='two'?'<p class="hint small">In this variant, catching either Chameleon triggers the final guess. The other Chameleon remains hidden until the reveal.</p>':''}`;
+   }else $('results').classList.add('hide');
+ }
+ $('reactionBar').classList.toggle('hide',roomData.phase==='roles'||roomData.phase==='lobby');renderReactions();const voting=roomData.phase==='result'||roomData.phase==='guess';$('voteBreakdown').classList.toggle('hide',!voting);
+ if(voting){const counts={};Object.values(roomData.votes||{}).forEach(id=>counts[id]=(counts[id]||0)+1);const total=Object.values(counts).reduce((a,b)=>a+b,0);$('voteBreakdown').innerHTML='<h3>🗳️ Voting results</h3><p class="hint small">The votes are in…</p>'+Object.entries(roomData.players||{}).sort((a,b)=>(counts[b[0]]||0)-(counts[a[0]]||0)).map(([id,p])=>`<div class="voteResultRow"><div class="small">${esc(p.name)} — ${counts[id]||0} vote(s)</div><div class="voteBar"><i style="width:${total?Math.round((counts[id]||0)/total*100):0}%"></i></div></div>`).join('')+(roomData.voteTie?'<p class="notice">Tie vote: nobody was convicted, so the Chameleon escapes.</p>':'');}
+ $('scoreboard').classList.toggle('hide',roomData.phase!=='result');
+ if(roomData.phase==='result'){const sorted=Object.entries(roomData.players||{}).sort((a,b)=>scoreOf(b[0]).points-scoreOf(a[0]).points);$('scoreList').innerHTML=sorted.map(([id,p],i)=>{const x=scoreOf(id);return `<div class="statBox"><strong>${i===0?'🏆 ':''}${x.points||0}</strong><small>${esc(p.name)} · ${x.wins||0} wins · ${x.streak||0} streak</small></div>`}).join('');$('historyList').innerHTML=Object.values(roomData.history||{}).reverse().slice(0,20).map(h=>`<p class="small"><b>Round ${Number(h.round)||'?'}:</b> ${esc(h.board||'')} · ${esc(h.outcome||'')} · Chameleon: ${esc(h.chameleonName||'?')}</p>`).join('')||'<p>No finished rounds yet.</p>';if(isHost&&!roomData.resultRecorded)recordResult();}
+}
+const inviteRoom=new URLSearchParams(location.search).get('room');if(inviteRoom&&/^[A-HJ-NP-Z2-9]{6}$/.test(inviteRoom.toUpperCase()))$('roomCode').value=inviteRoom.toUpperCase();
+$('createBtn').onclick=createRoom;$('joinBtn').onclick=joinRoom;
+$('copyInvite').onclick=async()=>{const link=inviteUrl();try{await navigator.clipboard.writeText(link);$('copyInvite').textContent='✓ Invite link copied';setTimeout(()=>$('copyInvite').textContent='↗ Copy invite link',2200)}catch{prompt('Copy this invite link:',link)}};
+$('copyCode').onclick=async()=>{try{await navigator.clipboard.writeText(roomId);$('copyCode').textContent='Copied!'}catch{$('copyCode').textContent='Code: '+roomId}};
+$('chatLauncher').onclick=()=>{drawOpen=false;renderDoodles();chatOpen=!chatOpen;if(chatOpen){chatSeenAt=Date.now();chatUnreadCount=0;$('chatUnread').classList.add('hide');chatCollapsed=false;$('chatBody').classList.remove('hide');$('chatCollapse').textContent='Close';}renderChat();if(chatOpen){const box=$('chatMessages');box.scrollTop=box.scrollHeight;}};
+$('chatCollapse').onclick=()=>{chatOpen=false;renderChat();};
+$('chatForm').onsubmit=async e=>{e.preventDefault();const input=$('chatInput'),message=input.value.trim().slice(0,220);if(!message||!roomRef||!roomData||roomData.phase==='lobby')return;const button=$('chatForm').querySelector('button');button.disabled=true;try{await roomRef.child('chat').push({uid,name:(roomData.players||{})[uid]?.name||'Player',text:message,at:firebase.database.ServerValue.TIMESTAMP});input.value='';$('chatStatus').textContent=''}catch(err){$('chatStatus').textContent='Message not sent: '+err.message}finally{button.disabled=false}};
+$('readyBtn').onclick=async()=>{if(roomRef&&roomData.players?.[uid])await roomRef.child('players/'+uid+'/ready').set(!roomData.players[uid].ready)};
+$('resetReady').onclick=async()=>{if(!isHost)return;const changes={};Object.keys(roomData.players||{}).forEach(id=>changes['players/'+id+'/ready']=false);await roomRef.update(changes)};
+$('difficultyFilter').onchange=renderRoom;
+$('favoriteBoard').onclick=()=>{const b=$('boardSelect').value;const f=getFavs();prefs.favorites=f.includes(b)?f.filter(x=>x!==b):[...f,b];savePrefs();renderRoom()};
+$('randomBoard').onclick=async()=>{if(!isHost)return;const all=Object.keys(roomData.boards||{}),filter=$('difficultyFilter').value,choices=all.filter(n=>filter==='all'||(filter==='favorites'?getFavs().includes(n):difficulty(n)===filter));if(!choices.length)return;const last=roomData.selectedBoard;const eligible=choices.filter(x=>x!==last);await roomRef.child('selectedBoard').set((eligible.length?eligible:choices)[Math.floor(Math.random()*(eligible.length||choices.length))])};
+$('timerStart').onclick=()=>updateTimer('start');$('timerPause').onclick=()=>updateTimer('pause');$('timerPlus').onclick=()=>updateTimer('plus');$('timerReset').onclick=()=>updateTimer('reset');
+for(const [id,key,convert] of [['turnOrderSetting','turnOrderEnabled',x=>x.checked],['cinematicSetting','cinematicReveal',x=>x.checked],['clueHistorySetting','clueHistoryEnabled',x=>x.checked],['typedCluesSetting','typedCluesEnabled',x=>x.checked],['clueTimerSetting','clueTurnSeconds',x=>Number(x.value)]]){$(id).addEventListener(id==='clueTimerSetting'?'change':'change',async()=>{if(!isHost)return;try{await roomRef.child(key).set(convert($(id)))}catch(e){alert('Setting could not be saved: '+e.message)}})}
+function renderChaosSettings(){if(!roomData)return;$('chaosEnabled').checked=!!roomData.chaosEnabled;$('chaosOptions').classList.toggle('hide',!roomData.chaosEnabled);$('chaosChance').value=roomData.chaosChance??15;$('chaosChanceLabel').textContent=($('chaosChance').value)+'%';$('chaosTwo').checked=roomData.chaosTwo!==false;$('chaosAll').checked=roomData.chaosAll!==false;}
+for(const [id,key,convert] of [['chaosEnabled','chaosEnabled',el=>el.checked],['chaosChance','chaosChance',el=>Number(el.value)],['chaosTwo','chaosTwo',el=>el.checked],['chaosAll','chaosAll',el=>el.checked]]){$(id).addEventListener(id==='chaosChance'?'change':'change',async()=>{if(!isHost)return;const val=convert($(id));if((key==='chaosTwo'||key==='chaosAll')&&!val){const other=key==='chaosTwo'?'chaosAll':'chaosTwo';if(roomData[other]===false){alert('Select at least one Chaos mode.');renderChaosSettings();return}}try{await roomRef.child(key).set(val)}catch(e){alert('Could not save Chaos setting: '+e.message)}})}
+$('chaosChance').addEventListener('input',()=>{$('chaosChanceLabel').textContent=$('chaosChance').value+'%'});
+$('finishTurn').onclick=advanceClueTurn;$('skipTurn').onclick=advanceClueTurn;
+$('clueForm').onsubmit=async e=>{e.preventDefault();if(!roomData||roomData.phase!=='clues'||roomData.typedCluesEnabled!==true)return;const input=$('clueInput'),value=input.value.trim().slice(0,80);if(!value)return;input.value='';try{await roomRef.child('clueEntries').push({uid,text:value,at:firebase.database.ServerValue.TIMESTAMP})}catch(err){input.value=value;alert('Could not save clue: '+err.message)}};
+$('showLiveVoteSetting').onchange=async()=>{if(!isHost)return;const enabled=$('showLiveVoteSetting').checked;try{await roomRef.child('showLiveVoteTally').set(enabled)}catch(e){$('showLiveVoteSetting').checked=!enabled;alert('Could not save vote setting: '+e.message)}};
+$('startBtn').onclick=async()=>{roleShown=false;await startRound()};$('nextPhase').onclick=()=>{if(!isHost)return;roomRef.child('phase').set(roomData.phase==='roles'?'clues':'voting')};$('newRound').onclick=async()=>{if(!isHost)return;roleShown=false;await startRound()};
+$('revealRole').onclick=async()=>{roleShown=!roleShown;playSound(roleShown&&isChameleon(uid)?420:680);renderGame();if(roleShown&&roomData.phase==='roles'){try{await roomRef.child('roleAcks/'+uid).set(true)}catch(e){console.warn('Role acknowledgement not saved',e)}}};
+$('backLobby').onclick=()=>{if(roomData.phase==='lobby'||roomData.phase==='result')setScreen('lobby');else msg('gameMsg','Finish the round before changing boards.','error')};
+$('endRoomBtn').onclick=()=>setScreen('home');
+$('addBoard').onclick=async()=>{
+ const name=$('newBoardName').value.trim().slice(0,32),words=[...new Set($('newWords').value.split('\n').map(x=>x.trim()).filter(Boolean))];
+ if(!name)return msg('customMsg','Give the board a name.','error');
+ if(words.length<5)return msg('customMsg','Add at least 5 different words.','error');
+ if(words.length>200)return msg('customMsg','Keep each board to 200 words or fewer.','error');
+ if(words.some(w=>w.length>80))return msg('customMsg','Keep each word to 80 characters or fewer.','error');
+ if(Object.prototype.hasOwnProperty.call(DEFAULT_BOARDS,name))return msg('customMsg','That name is reserved for a built-in board. Choose another.','error');
+ const button=$('addBoard');button.disabled=true;
+ try{
+   // Use a Firebase transaction so simultaneous contributors cannot overwrite a board.
+   const result=await db.ref('sharedBoards').transaction(current=>{
+     current=current||{};
+     if(Object.values(current).some(b=>b&&b.name&&b.name.toLowerCase()===name.toLowerCase()))return;
+     const key=db.ref('sharedBoards').push().key;
+     current[key]={name,words,createdBy:uid,createdAt:firebase.database.ServerValue.TIMESTAMP};
+     return current;
+   },undefined,false);
+   if(!result.committed)return msg('customMsg','A board with that name already exists. Choose a different name.','error');
+   await roomRef.child('boards/'+name).set(words);
+   if(isHost&&roomData.phase==='lobby')await roomRef.child('selectedBoard').set(name);
+   $('newBoardName').value='';$('newWords').value='';
+   msg('customMsg',`Saved "${name}" permanently! It will be available in new rooms.`, 'success');
+ }catch(e){msg('customMsg','Could not save board: '+e.message+' — check sharedBoards database rules.','error')}
+ finally{button.disabled=false}
+};
+$('submitVote').onclick=async()=>{const id=selectedVote;if(!id||roomData.phase!=='voting'||roomData.votes?.[uid]||!roomData.players?.[id]||id===uid)return;const btn=$('submitVote');btn.disabled=true;try{const result=await roomRef.child('votes/'+uid).transaction(current=>current||id,undefined,false);if(!result.committed)throw new Error('Vote not saved');playSound(740)}catch(e){btn.disabled=false;$('voteMsg').textContent='Could not save your vote: '+e.message}};
+$('showResults').onclick=async()=>{
+ if(!isHost)return;
+ const votes=roomData.votes||{},counts={};Object.values(votes).forEach(v=>counts[v]=(counts[v]||0)+1);
+ const max=Math.max(0,...Object.values(counts)),leaders=Object.keys(counts).filter(id=>counts[id]===max);
+ const accused=leaders.length===1?leaders[0]:null;
+ await roomRef.update({accused,voteTie:leaders.length!==1,revealAt:roomData.cinematicReveal!==false?firebase.database.ServerValue.TIMESTAMP:null,phase:roomData.roundMode==='all'?'result':isChameleon(accused)?'guess':'result'});
+};
+$('submitGuess').onclick=async()=>{
+ if(uid!==roomData.chameleon||roomData.phase!=='guess')return;
+ const guess=$('guessPick').value;
+ if(!((roomData.boards||{})[roomData.selectedBoard]||[]).includes(guess))return;
+ $('submitGuess').disabled=true;
+ try{await roomRef.update({finalGuess:guess,phase:'result'})}catch(e){$('guessMsg').textContent='Could not submit guess: '+e.message}finally{$('submitGuess').disabled=false}
+};
+
+
+async function recordResult(){
+ if(!isHost||!roomData||roomData.phase!=='result'||roomData.resultRecorded)return;
+ // A transaction prevents duplicate points when the host refreshes or multiple callbacks fire.
+ await roomRef.transaction(data=>{
+  if(!data||data.phase!=='result'||data.resultRecorded)return;
+  const scores=data.scores||{},players=data.players||{},ids=Object.keys(players),chams=chameleonIds(data),mode=data.roundMode||'classic';
+  const caught=chams.includes(data.accused),correct=caught&&data.finalGuess===data.secretWord,chamWon=!caught||correct;
+  if(!data.endedEarly&&mode!=='all'){
+   for(const id of ids){const s=scores[id]||{points:0,wins:0,streak:0,bluffs:0,catches:0};const isCham=chams.includes(id),won=isCham?chamWon:!chamWon;s.points=(s.points||0)+(won?2:0);s.wins=(s.wins||0)+(won?1:0);s.streak=won?(s.streak||0)+1:0;if(isCham&&chamWon)s.bluffs=(s.bluffs||0)+1;if(!isCham&&caught&&!correct&&chams.includes(data.votes?.[id])){s.points+=1;s.catches=(s.catches||0)+1}scores[id]=s;}
+  }
+  data.scores=scores;data.history=data.history||{};data.history['round'+data.round]={round:data.round,board:data.selectedBoard,outcome:data.endedEarly?'Ended early':mode==='all'?'Everyone Chameleon (bonus)':chamWon?'Chameleons win':'Group wins',chameleonName:chams.map(id=>players[id]?.name||'Unknown').join(', '),at:Date.now()};data.resultRecorded=true;return data;
+ },undefined,false).catch(e=>msg('gameMsg','Could not record score: '+e.message,'error'));
+}
+
+$('forceEndRound').onclick=async()=>{if(!isHost||!roomRef||!roomData||roomData.phase==='lobby')return;if(!confirm('End this round now for everyone? The result will be shown and you can start a new round.'))return;try{await roomRef.update({phase:'result',accused:null,finalGuess:null,endedEarly:true})}catch(e){msg('gameMsg','Could not end round: '+e.message,'error')}};
+$('returnEveryoneLobby').onclick=async()=>{if(!isHost||!roomRef)return;if(!confirm('Return all players to the lobby? This cancels the current round.'))return;try{await roomRef.update({phase:'lobby',votes:{},roleAcks:{},secretWord:null,chameleon:null,finalGuess:null,accused:null,endedEarly:false})}catch(e){msg('gameMsg','Could not return to lobby: '+e.message,'error')}};
+$('skipGuess').onclick=async()=>{
+ if(!isHost||roomData.phase!=='guess')return;
+ if(!confirm('End the Chameleon’s final chance and reveal the result?'))return;
+ try{await roomRef.update({finalGuess:null,phase:'result'})}catch(e){msg('gameMsg','Could not reveal result: '+e.message,'error')}
+};
+
+
+// Shared doodle board: Firebase room-scoped strokes, touch/mouse/stylus via Pointer Events.
+// Strokes are saved on release to keep database writes small; everyone's finished marks appear live.
+const DRAW_PALETTE=['#202c44','#f25b70','#f4a340','#f4d35e','#31b98e','#5387ef','#a37aee'];
+let drawOpen=false,drawColour=DRAW_PALETTE[0],drawWidth=5,drawErasing=false,drawActive=null,drawSignature='',drawStrokes=[];
+const drawCanvas=$('drawCanvas'),drawCtx=drawCanvas.getContext('2d');
+function paintStroke(s){
+ if(!s||!Array.isArray(s.points)||!s.points.length)return;
+ const pts=s.points;drawCtx.beginPath();drawCtx.strokeStyle=s.erase?'#ffffff':(DRAW_PALETTE.includes(s.color)?s.color:DRAW_PALETTE[0]);drawCtx.fillStyle=drawCtx.strokeStyle;drawCtx.lineWidth=s.erase?Math.min(65,Math.max(5,Number(s.width)||18)):Math.min(25,Math.max(2,Number(s.width)||5));drawCtx.lineJoin='round';drawCtx.lineCap='round';
+ const first=pts[0];drawCtx.moveTo(first[0]*800,first[1]*600);
+ for(let i=1;i<pts.length;i++){const pt=pts[i];drawCtx.lineTo(pt[0]*800,pt[1]*600)}
+ if(pts.length===1){drawCtx.arc(first[0]*800,first[1]*600,drawCtx.lineWidth/2,0,Math.PI*2);drawCtx.fill()}else drawCtx.stroke();
+}
+function redrawDoodles(){drawCtx.fillStyle='#ffffff';drawCtx.fillRect(0,0,800,600);drawStrokes.forEach(([,s])=>paintStroke(s));if(drawActive)paintStroke(drawActive)}
+function renderDoodles(){
+ const inRoom=!!roomData&&(!!roomData.players?.[uid]||roomData.host===uid);$('drawLauncher').classList.toggle('hide',!inRoom);
+ if(!inRoom){drawOpen=false;drawActive=null;}
+ $('drawPanel').classList.toggle('hide',!inRoom||!drawOpen);
+ $('drawClear').classList.toggle('hide',!isHost);
+ const strokes=Object.entries(roomData?.doodles?.strokes||{}).filter(([,s])=>s&&Array.isArray(s.points)).sort((a,b)=>(a[1].at||0)-(b[1].at||0));
+ const sig=strokes.map(([k,s])=>k+':'+(s.points?.length||0)).join('|');
+ if(sig!==drawSignature){drawSignature=sig;drawStrokes=strokes;redrawDoodles()}
+ $('drawStatus').textContent=strokes.length?`${strokes.length} shared doodles · everyone can draw`:'Blank canvas — start something together!';
+}
+function drawPosition(e){const rect=drawCanvas.getBoundingClientRect();return [Math.max(0,Math.min(1,Math.round((e.clientX-rect.left)/rect.width*1000)/1000)),Math.max(0,Math.min(1,Math.round((e.clientY-rect.top)/rect.height*1000)/1000))]}
+function setDrawColour(c){drawColour=c;drawErasing=false;document.querySelectorAll('#drawColors button').forEach(b=>b.classList.toggle('selected',b.dataset.color===c));$('drawEraser').textContent='Eraser'}
+$('drawColors').innerHTML=DRAW_PALETTE.map((c,i)=>`<button type="button" data-color="${c}" style="background:${c}" aria-label="Colour ${i+1}" title="Colour ${i+1}"></button>`).join('');
+$('drawColors').querySelectorAll('button').forEach(b=>b.onclick=()=>setDrawColour(b.dataset.color));setDrawColour(drawColour);
+$('drawLauncher').onclick=()=>{drawOpen=!drawOpen;if(drawOpen){chatOpen=false;renderChat()}renderDoodles()};
+$('drawClose').onclick=()=>{drawOpen=false;renderDoodles()};
+$('drawEraser').onclick=()=>{drawErasing=!drawErasing;$('drawEraser').textContent=drawErasing?'✓ Eraser':'Eraser';if(drawErasing)document.querySelectorAll('#drawColors button').forEach(b=>b.classList.remove('selected'));else setDrawColour(drawColour)};
+$('drawSize').onclick=()=>{drawWidth=drawWidth===3?5:drawWidth===5?9:3;$('drawSize').textContent='Pen: '+(drawWidth===3?'S':drawWidth===5?'M':'L')};
+drawCanvas.addEventListener('pointerdown',e=>{if(!roomRef||!roomData||!(roomData.players?.[uid]||roomData.host===uid)||drawActive)return;e.preventDefault();try{drawCanvas.setPointerCapture(e.pointerId)}catch{}drawActive={uid,color:drawColour,width:drawErasing?22:drawWidth,erase:drawErasing,points:[drawPosition(e)]};redrawDoodles()});
+drawCanvas.addEventListener('pointermove',e=>{if(!drawActive)return;e.preventDefault();const pos=drawPosition(e),pts=drawActive.points,last=pts[pts.length-1];if(pts.length<180&&Math.hypot((pos[0]-last[0])*800,(pos[1]-last[1])*600)>3){pts.push(pos);redrawDoodles()}});
+async function finishDoodle(e){if(!drawActive)return;if(e)e.preventDefault();const s=drawActive;drawActive=null;redrawDoodles();if(!roomRef||!roomData)return;try{
+ // Restrict the canvas to 160 strokes to avoid unbounded room growth.
+ if(drawStrokes.length>=160){$('drawStatus').textContent='Board full — ask the host to clear it.';return}
+ await roomRef.child('doodles/strokes').push({...s,at:firebase.database.ServerValue.TIMESTAMP});
+ }catch(err){$('drawStatus').textContent='Could not share drawing: '+err.message}}
+drawCanvas.addEventListener('pointerup',finishDoodle);drawCanvas.addEventListener('pointercancel',finishDoodle);drawCanvas.addEventListener('lostpointercapture',finishDoodle);window.addEventListener('pointerup',e=>{if(drawActive)finishDoodle(e)});
+$('drawUndo').onclick=async()=>{if(!roomRef)return;const own=drawStrokes.filter(([,s])=>s.uid===uid);if(!own.length){$('drawStatus').textContent='No doodles of yours to undo yet.';return}try{await roomRef.child('doodles/strokes/'+own[own.length-1][0]).remove()}catch(e){$('drawStatus').textContent='Could not undo: '+e.message}};
+$('drawClear').onclick=async()=>{if(!isHost||!roomRef||!confirm('Clear the shared doodle board for everyone?'))return;try{await roomRef.child('doodles/strokes').remove()}catch(e){$('drawStatus').textContent='Could not clear: '+e.message}};
+
+// Reconnect after refresh on the same browser, without losing the existing anonymous Firebase identity.
+const originalInit=init;init=async function(){await originalInit();if(!db||!uid)return;let code;try{code=sessionStorage.getItem('chameleonRoom')}catch{};if(code&&/^[A-HJ-NP-Z2-9]{6}$/.test(code)){try{const snap=await db.ref('rooms/'+code).get();if(snap.exists()&&snap.val().players?.[uid])await enterRoom(code)}catch(e){console.warn('Rejoin unavailable:',e)}}};
+init();
+</script>
+</body></html>
